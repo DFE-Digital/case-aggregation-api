@@ -12,7 +12,7 @@
           "Cases"
         ],
         "summary": "Retrieve Principal by school name",
-        "operationId": "Cases_GetPrincipalBySchool",
+        "operationId": "Cases_GetCasesByUser",
         "parameters": [
           {
             "name": "userEmail",
@@ -31,13 +31,91 @@
             "x-position": 2
           },
           {
+            "name": "includeSignificantChange",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "includePrepare",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 4
+          },
+          {
+            "name": "includeComplete",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 5
+          },
+          {
+            "name": "includeManageFreeSchools",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 6
+          },
+          {
+            "name": "includeConcerns",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 7
+          },
+          {
+            "name": "includeWarningNotices",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 8
+          },
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 9
+          },
+          {
+            "name": "filterProjectTypes",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "x-position": 10
+          },
+          {
+            "name": "sortCriteria",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/SortCriteria"
+            },
+            "x-position": 11
+          },
+          {
             "name": "api-version",
             "in": "query",
             "schema": {
               "type": "string",
               "nullable": true
             },
-            "x-position": 3
+            "x-position": 12
           }
         ],
         "responses": {
@@ -46,7 +124,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Principal"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCaseInfo"
+                  }
                 }
               }
             }
@@ -216,6 +297,71 @@
   },
   "components": {
     "schemas": {
+      "UserCaseInfo": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "titleLink": {
+            "type": "string"
+          },
+          "system": {
+            "type": "string"
+          },
+          "projectType": {
+            "type": "string"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "info": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CaseInfoItem"
+            }
+          }
+        }
+      },
+      "CaseInfoItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "SortCriteria": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "CreatedDateDescending",
+          "CreatedDateAscending",
+          "UpdatedDateAscending",
+          "UpdatedDateDescending"
+        ],
+        "enum": [
+          "CreatedDateDescending",
+          "CreatedDateAscending",
+          "UpdatedDateAscending",
+          "UpdatedDateDescending"
+        ]
+      },
       "Principal": {
         "allOf": [
           {

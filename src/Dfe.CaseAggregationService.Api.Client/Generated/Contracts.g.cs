@@ -29,16 +29,16 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// Retrieve Principal by school name
         /// </summary>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string userEmail, string userName, string api_version);
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, string api_version);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string userEmail, string userName, string api_version, System.Threading.CancellationToken cancellationToken);
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
+        System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, string api_version, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -50,7 +50,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="schoolName">The school name.</param>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string schoolName);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -59,7 +59,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="schoolName">The school name.</param>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string schoolName, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>A collection of Principal objects.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Principal>> GetPrincipalsBySchoolsAsync(GetPrincipalsBySchoolsQuery request);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -76,7 +76,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>A collection of Principal objects.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Principal>> GetPrincipalsBySchoolsAsync(GetPrincipalsBySchoolsQuery request, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>School created successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<SchoolId> CreateSchoolAsync(CreateSchoolCommand request);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -93,7 +93,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>School created successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<SchoolId> CreateSchoolAsync(CreateSchoolCommand request, System.Threading.CancellationToken cancellationToken);
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task queued successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<bool> CreateReportAsync(CreateReportCommand request);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -110,8 +110,92 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task queued successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<bool> CreateReportAsync(CreateReportCommand request, System.Threading.CancellationToken cancellationToken);
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class UserCaseInfo
+    {
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("titleLink", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string TitleLink { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("system", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string System { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("projectType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ProjectType { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("createdDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTime CreatedDate { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("updatedDate", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTime UpdatedDate { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("info", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<CaseInfoItem> Info { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static UserCaseInfo FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<UserCaseInfo>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class CaseInfoItem
+    {
+        [Newtonsoft.Json.JsonProperty("label", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Label { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("value", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Value { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("link", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Link { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static CaseInfoItem FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<CaseInfoItem>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public enum SortCriteria
+    {
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CreatedDateDescending")]
+        CreatedDateDescending = 0,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"CreatedDateAscending")]
+        CreatedDateAscending = 1,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UpdatedDateAscending")]
+        UpdatedDateAscending = 2,
+
+        [System.Runtime.Serialization.EnumMember(Value = @"UpdatedDateDescending")]
+        UpdatedDateDescending = 3,
 
     }
 
@@ -342,7 +426,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
 
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PersonsApiException : System.Exception
+    public partial class CaseAggregationServiceApiException : System.Exception
     {
         public int StatusCode { get; private set; }
 
@@ -350,7 +434,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
 
         public System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> Headers { get; private set; }
 
-        public PersonsApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
+        public CaseAggregationServiceApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, System.Exception innerException)
             : base(message + "\n\nStatus: " + statusCode + "\nResponse: \n" + ((response == null) ? "(null)" : response.Substring(0, response.Length >= 512 ? 512 : response.Length)), innerException)
         {
             StatusCode = statusCode;
@@ -365,11 +449,11 @@ namespace Dfe.CaseAggregationService.Client.Contracts
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
-    public partial class PersonsApiException<TResult> : PersonsApiException
+    public partial class CaseAggregationServiceApiException<TResult> : CaseAggregationServiceApiException
     {
         public TResult Result { get; private set; }
 
-        public PersonsApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
+        public CaseAggregationServiceApiException(string message, int statusCode, string response, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IEnumerable<string>> headers, TResult result, System.Exception innerException)
             : base(message, statusCode, response, headers, innerException)
         {
             Result = result;

@@ -76,10 +76,10 @@ namespace Dfe.CaseAggregationService.Client
         /// Retrieve Principal by school name
         /// </summary>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string userEmail, string userName, string api_version)
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
+        public virtual System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, string api_version)
         {
-            return GetPrincipalBySchoolAsync(userEmail, userName, api_version, System.Threading.CancellationToken.None);
+            return GetCasesByUserAsync(userEmail, userName, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, searchTerm, filterProjectTypes, sortCriteria, api_version, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -87,8 +87,8 @@ namespace Dfe.CaseAggregationService.Client
         /// Retrieve Principal by school name
         /// </summary>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string userEmail, string userName, string api_version, System.Threading.CancellationToken cancellationToken)
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
+        public virtual async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, string api_version, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -111,6 +111,42 @@ namespace Dfe.CaseAggregationService.Client
                     if (userName != null)
                     {
                         urlBuilder_.Append(System.Uri.EscapeDataString("userName")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(userName, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (includeSignificantChange != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeSignificantChange")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeSignificantChange, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (includePrepare != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includePrepare")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includePrepare, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (includeComplete != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeComplete")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeComplete, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (includeManageFreeSchools != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeManageFreeSchools")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeManageFreeSchools, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (includeConcerns != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeConcerns")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeConcerns, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (includeWarningNotices != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("includeWarningNotices")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeWarningNotices, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (searchTerm != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("searchTerm")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchTerm, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (filterProjectTypes != null)
+                    {
+                        foreach (var item_ in filterProjectTypes) { urlBuilder_.Append(System.Uri.EscapeDataString("filterProjectTypes")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+                    }
+                    if (sortCriteria != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("sortCriteria")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(sortCriteria, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (api_version != null)
                     {
@@ -143,10 +179,10 @@ namespace Dfe.CaseAggregationService.Client
                         var status_ = (int)response_.StatusCode;
                         if (status_ == 200)
                         {
-                            var objectResponse_ = await ReadObjectResponseAsync<Principal>(response_, headers_, cancellationToken).ConfigureAwait(false);
+                            var objectResponse_ = await ReadObjectResponseAsync<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new PersonsApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CaseAggregationServiceApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
@@ -154,18 +190,18 @@ namespace Dfe.CaseAggregationService.Client
                         if (status_ == 404)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("School not found.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("School not found.", status_, responseText_, headers_, null);
                         }
                         else
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("School cannot be null or empty.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("School cannot be null or empty.", status_, responseText_, headers_, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CaseAggregationServiceApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -215,7 +251,7 @@ namespace Dfe.CaseAggregationService.Client
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new PersonsApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                    throw new CaseAggregationServiceApiException(message, (int)response.StatusCode, responseText, headers, exception);
                 }
             }
             else
@@ -234,7 +270,7 @@ namespace Dfe.CaseAggregationService.Client
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new PersonsApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                    throw new CaseAggregationServiceApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
                 }
             }
         }
@@ -347,7 +383,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="schoolName">The school name.</param>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string schoolName)
         {
             return GetPrincipalBySchoolAsync(schoolName, System.Threading.CancellationToken.None);
@@ -359,7 +395,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="schoolName">The school name.</param>
         /// <returns>A Person object representing the Principal.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<Principal> GetPrincipalBySchoolAsync(string schoolName, System.Threading.CancellationToken cancellationToken)
         {
             if (schoolName == null)
@@ -409,7 +445,7 @@ namespace Dfe.CaseAggregationService.Client
                             var objectResponse_ = await ReadObjectResponseAsync<Principal>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new PersonsApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CaseAggregationServiceApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
@@ -417,18 +453,18 @@ namespace Dfe.CaseAggregationService.Client
                         if (status_ == 404)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("School not found.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("School not found.", status_, responseText_, headers_, null);
                         }
                         else
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("School cannot be null or empty.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("School cannot be null or empty.", status_, responseText_, headers_, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CaseAggregationServiceApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -450,7 +486,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>A collection of Principal objects.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Principal>> GetPrincipalsBySchoolsAsync(GetPrincipalsBySchoolsQuery request)
         {
             return GetPrincipalsBySchoolsAsync(request, System.Threading.CancellationToken.None);
@@ -462,7 +498,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>A collection of Principal objects.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<Principal>> GetPrincipalsBySchoolsAsync(GetPrincipalsBySchoolsQuery request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
@@ -514,7 +550,7 @@ namespace Dfe.CaseAggregationService.Client
                             var objectResponse_ = await ReadObjectResponseAsync<System.Collections.ObjectModel.ObservableCollection<Principal>>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new PersonsApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CaseAggregationServiceApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
@@ -522,12 +558,12 @@ namespace Dfe.CaseAggregationService.Client
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("School names cannot be null or empty.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("School names cannot be null or empty.", status_, responseText_, headers_, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CaseAggregationServiceApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -549,7 +585,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>School created successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<SchoolId> CreateSchoolAsync(CreateSchoolCommand request)
         {
             return CreateSchoolAsync(request, System.Threading.CancellationToken.None);
@@ -561,7 +597,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>School created successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<SchoolId> CreateSchoolAsync(CreateSchoolCommand request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
@@ -613,7 +649,7 @@ namespace Dfe.CaseAggregationService.Client
                             var objectResponse_ = await ReadObjectResponseAsync<SchoolId>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new PersonsApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CaseAggregationServiceApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
@@ -621,12 +657,12 @@ namespace Dfe.CaseAggregationService.Client
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("Invalid request data.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("Invalid request data.", status_, responseText_, headers_, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CaseAggregationServiceApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -648,7 +684,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task queued successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<bool> CreateReportAsync(CreateReportCommand request)
         {
             return CreateReportAsync(request, System.Threading.CancellationToken.None);
@@ -660,7 +696,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <returns>Task queued successfully.</returns>
-        /// <exception cref="PersonsApiException">A server side error occurred.</exception>
+        /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<bool> CreateReportAsync(CreateReportCommand request, System.Threading.CancellationToken cancellationToken)
         {
             if (request == null)
@@ -712,7 +748,7 @@ namespace Dfe.CaseAggregationService.Client
                             var objectResponse_ = await ReadObjectResponseAsync<bool>(response_, headers_, cancellationToken).ConfigureAwait(false);
                             if (objectResponse_.Object == null)
                             {
-                                throw new PersonsApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                                throw new CaseAggregationServiceApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
                             }
                             return objectResponse_.Object;
                         }
@@ -720,12 +756,12 @@ namespace Dfe.CaseAggregationService.Client
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("Invalid request data.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("Invalid request data.", status_, responseText_, headers_, null);
                         }
                         else
                         {
                             var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new PersonsApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
+                            throw new CaseAggregationServiceApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
                         }
                     }
                     finally
@@ -775,7 +811,7 @@ namespace Dfe.CaseAggregationService.Client
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body string as " + typeof(T).FullName + ".";
-                    throw new PersonsApiException(message, (int)response.StatusCode, responseText, headers, exception);
+                    throw new CaseAggregationServiceApiException(message, (int)response.StatusCode, responseText, headers, exception);
                 }
             }
             else
@@ -794,7 +830,7 @@ namespace Dfe.CaseAggregationService.Client
                 catch (Newtonsoft.Json.JsonException exception)
                 {
                     var message = "Could not deserialize the response body stream as " + typeof(T).FullName + ".";
-                    throw new PersonsApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
+                    throw new CaseAggregationServiceApiException(message, (int)response.StatusCode, string.Empty, headers, exception);
                 }
             }
         }

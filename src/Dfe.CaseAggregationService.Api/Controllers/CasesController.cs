@@ -25,15 +25,24 @@ namespace Dfe.CaseAggregationService.Api.Controllers
         /// Retrieve Principal by school name
         /// </summary>
         /// <param name="schoolName">The school name.</param>
+        /// <param name="includeWarningNotices"></param>
+        /// <param name="filterProjectTypes"></param>
         /// <param name="cancellationToken">The cancellation token.</param>
+        /// <param name="userEmail"></param>
+        /// <param name="userName"></param>
+        /// <param name="includeSignificantChange"></param>
+        /// <param name="includePrepare"></param>
+        /// <param name="includeComplete"></param>
+        /// <param name="includeManageFreeSchools"></param>
+        /// <param name="includeConcerns"></param>
         //[Authorize(Policy = PolicyNames.CanRead)]
         [HttpGet("/user/")]
-        [SwaggerResponse(200, "A Person object representing the Principal.", typeof(Principal))]
+        [SwaggerResponse(200, "A Person object representing the Principal.", typeof(List<UserCaseInfo>))]
         [SwaggerResponse(404, "School not found.")]
         [SwaggerResponse(400, "School cannot be null or empty.")]
-        public async Task<IActionResult> GetPrincipalBySchoolAsync([FromQuery] string userEmail, [FromQuery] string userName, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCasesByUser([FromQuery] string userEmail, [FromQuery] string userName, [FromQuery] bool includeSignificantChange, [FromQuery] bool includePrepare, [FromQuery] bool includeComplete, [FromQuery] bool includeManageFreeSchools, [FromQuery] bool includeConcerns, [FromQuery] bool includeWarningNotices, [FromQuery] string? searchTerm, [FromQuery] string[] filterProjectTypes, [FromQuery] SortCriteria sortCriteria, CancellationToken cancellationToken)
         {
-            var result = await sender.Send(new GetCasesForUserQuery(userName, userEmail), cancellationToken);
+            var result = await sender.Send(new GetCasesForUserQuery(userName, userEmail, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, filterProjectTypes, searchTerm, sortCriteria), cancellationToken);
 
             return !result.IsSuccess ? NotFound(new CustomProblemDetails(HttpStatusCode.NotFound, result.Error)) : Ok(result.Value);
         }

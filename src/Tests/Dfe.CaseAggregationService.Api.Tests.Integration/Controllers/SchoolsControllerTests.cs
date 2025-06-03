@@ -50,7 +50,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             var schoolName = Uri.EscapeDataString("NonExistentSchool");
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<PersonsApiException>(async () =>
+            var exception = await Assert.ThrowsAsync<CaseAggregationServiceApiException>(async () =>
                 await schoolsClient.GetPrincipalBySchoolAsync(schoolName));
 
             Assert.Equal(HttpStatusCode.NotFound, (HttpStatusCode)exception.StatusCode);
@@ -108,7 +108,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
 
             // Act & Assert
-            var exception = await Assert.ThrowsAsync<PersonsApiException>(async () =>
+            var exception = await Assert.ThrowsAsync<CaseAggregationServiceApiException>(async () =>
                 await schoolsClient.GetPrincipalsBySchoolsAsync(
                     new GetPrincipalsBySchoolsQuery() { SchoolNames = [] }));
 

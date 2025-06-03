@@ -57,7 +57,6 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
 
                 var services = new ServiceCollection();
                 services.AddSingleton<IConfiguration>(config);
-                services.AddApiClient<ISchoolsClient, SchoolsClient>(config, client);
 
                 var serviceProvider = services.BuildServiceProvider();
 
