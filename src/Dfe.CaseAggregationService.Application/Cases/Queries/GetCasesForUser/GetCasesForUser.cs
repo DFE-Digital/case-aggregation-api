@@ -1,9 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Domain.Interfaces.Services;
 using MediatR;
-using Dfe.SignificantChange.Client.Contracts;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 using Microsoft.Extensions.Logging;
@@ -36,10 +34,8 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         SortCriteria? SortCriteria = SortCriteria.CreatedDateDescending) : IRequest<Result<List<UserCaseInfo>>>;
 
     public class GetCasesForUserQueryHandler(
-        ICaseClient caseClient,
         IGetAcademisationSummary getAcademisationSummary,
         IGetCaseInfo<AcademisationSummary> academisationMap,
-        IGetCaseInfo<SignificantChangeCase> sigChangeMap,
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<List<UserCaseInfo>>>
     {
@@ -51,12 +47,6 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             var userCaseInfo = new List<UserCaseInfo>();
 
             var listOfTasks = new List<Task<IEnumerable<UserCaseInfo>>>();
-
-            if (request.IncludeSignificantChange)
-            {
-                listOfTasks.Add(caseClient.GetSignificantChangeByUserAsync(request.UserName, cancellationToken)
-                    .ContinueWith(ProcessSigChange, cancellationToken));
-            }
 
             if (request.IncludePrepare)
             {
@@ -96,17 +86,6 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                 userCaseInfo.Sort((x1, x2) => DateTime.Compare(x1.UpdatedDate, x2.UpdatedDate));
             if (request.SortCriteria == SortCriteria.UpdatedDateDescending)
                 userCaseInfo.Sort((x1, x2) => DateTime.Compare(x2.UpdatedDate, x1.UpdatedDate));
-        }
-
-        private IEnumerable<UserCaseInfo> ProcessSigChange(Task<ObservableCollection<SignificantChangeCase>> cases)
-        {
-            if (!cases.IsFaulted)
-            {
-                var significantChangeCases = cases.Result.ToList();
-                return significantChangeCases.Select(sigChangeMap.GetCaseInfo);
-            }
-
-            return [];
         }
 
         private IEnumerable<UserCaseInfo> ProcessAcademisation(Task<IEnumerable<AcademisationSummary>> cases)

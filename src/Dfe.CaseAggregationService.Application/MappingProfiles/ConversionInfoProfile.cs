@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Dfe.CaseAggregationService.Application.Common.Models;
-using Dfe.SignificantChange.Client.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

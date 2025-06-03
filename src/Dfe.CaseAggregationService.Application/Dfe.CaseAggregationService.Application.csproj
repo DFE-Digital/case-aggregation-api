@@ -19,10 +19,4 @@
     <ProjectReference Include="..\Dfe.CaseAggregationService.Utils\Dfe.CaseAggregationService.Utils.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Dfe.SignificantChange.Api.Client">
-      <HintPath>..\..\..\rsd-significant-change-api\src\Dfe.SignificantChange.Api.Client\bin\Debug\net8.0\Dfe.SignificantChange.Api.Client.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

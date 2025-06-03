@@ -25,12 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Dfe.SignificantChange.Api.Client">
-      <HintPath>..\..\..\..\rsd-significant-change-api\src\Dfe.SignificantChange.Api.Client\bin\Debug\net8.0\Dfe.SignificantChange.Api.Client.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="SecurityTests\ExpectedSecurity.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

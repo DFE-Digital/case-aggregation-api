@@ -4,9 +4,6 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using Dfe.SignificantChange.Api.Client.Extensions;
-using Dfe.SignificantChange.Client;
-using Dfe.SignificantChange.Client.Contracts;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 
@@ -32,16 +29,12 @@ namespace Microsoft.Extensions.DependencyInjection
                     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
                 }
             });
-
-            services.AddSignificantChangeApiClient<ICaseClient, CaseClient>(config);
-
+            
             services.AddAutoMapper(typeof(SchoolProfile));
-            services.AddAutoMapper(typeof(SignificantChangeProfile));
             services.AddAutoMapper(typeof(ConversionInfoProfile));
             services.AddAutoMapper(typeof(TransferInfoProfile));
 
             services.AddScoped<IGetCaseInfo<AcademisationSummary>, GetCaseInfoFromAcademisationSummary>();
-            services.AddScoped<IGetCaseInfo<SignificantChangeCase>, GetCaseInfoFromSigChange>();
             
             services.AddBackgroundService();
 
