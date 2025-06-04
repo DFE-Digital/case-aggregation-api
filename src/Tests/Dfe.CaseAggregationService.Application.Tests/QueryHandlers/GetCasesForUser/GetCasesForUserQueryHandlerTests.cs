@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser;
+using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 using Dfe.CaseAggregationService.Domain.Interfaces.Services;
@@ -71,13 +72,15 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             // Assert
             Assert.NotNull(result);
 
-            Assert.Equal(5, result.Value!.Count);
+            var getCasesByUserResponseModel = result.Value!;
+            Assert.Equal(5, getCasesByUserResponseModel.TotalRecordCount);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos.Count);
 
-            Assert.Equal(5, result.Value!.ToArray()[0].CreatedDate.Day);
-            Assert.Equal(4, result.Value!.ToArray()[1].CreatedDate.Day);
-            Assert.Equal(3, result.Value!.ToArray()[2].CreatedDate.Day);
-            Assert.Equal(2, result.Value!.ToArray()[3].CreatedDate.Day);
-            Assert.Equal(1, result.Value!.ToArray()[4].CreatedDate.Day);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos[0].CreatedDate.Day);
+            Assert.Equal(4, getCasesByUserResponseModel.CaseInfos[1].CreatedDate.Day);
+            Assert.Equal(3, getCasesByUserResponseModel.CaseInfos[2].CreatedDate.Day);
+            Assert.Equal(2, getCasesByUserResponseModel.CaseInfos[3].CreatedDate.Day);
+            Assert.Equal(1, getCasesByUserResponseModel.CaseInfos[4].CreatedDate.Day);
         }
 
         [Fact]
@@ -110,15 +113,19 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
+
+            // Assert
             Assert.NotNull(result);
 
-            Assert.Equal(5, result.Value!.Count);
+            var getCasesByUserResponseModel = result.Value!;
+            Assert.Equal(5, getCasesByUserResponseModel.TotalRecordCount);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos.Count);
 
-            Assert.Equal(1, result.Value!.ToArray()[0].CreatedDate.Day);
-            Assert.Equal(2, result.Value!.ToArray()[1].CreatedDate.Day);
-            Assert.Equal(3, result.Value!.ToArray()[2].CreatedDate.Day);
-            Assert.Equal(4, result.Value!.ToArray()[3].CreatedDate.Day);
-            Assert.Equal(5, result.Value!.ToArray()[4].CreatedDate.Day);
+            Assert.Equal(1, getCasesByUserResponseModel.CaseInfos[0].CreatedDate.Day);
+            Assert.Equal(2, getCasesByUserResponseModel.CaseInfos[1].CreatedDate.Day);
+            Assert.Equal(3, getCasesByUserResponseModel.CaseInfos[2].CreatedDate.Day);
+            Assert.Equal(4, getCasesByUserResponseModel.CaseInfos[3].CreatedDate.Day);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos[4].CreatedDate.Day);
         }
 
         [Fact]
@@ -149,15 +156,22 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
+
+
+            // Assert
             Assert.NotNull(result);
 
-            Assert.Equal(5, result.Value!.Count);
+            var getCasesByUserResponseModel = result.Value!;
+            Assert.Equal(5, getCasesByUserResponseModel.TotalRecordCount);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos.Count);
 
-            Assert.Equal(5, result.Value!.ToArray()[0].UpdatedDate.Day);
-            Assert.Equal(4, result.Value!.ToArray()[1].UpdatedDate.Day);
-            Assert.Equal(3, result.Value!.ToArray()[2].UpdatedDate.Day);
-            Assert.Equal(2, result.Value!.ToArray()[3].UpdatedDate.Day);
-            Assert.Equal(1, result.Value!.ToArray()[4].UpdatedDate.Day);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos[0].UpdatedDate.Day);
+            Assert.Equal(4, getCasesByUserResponseModel.CaseInfos[1].UpdatedDate.Day);
+            Assert.Equal(3, getCasesByUserResponseModel.CaseInfos[2].UpdatedDate.Day);
+            Assert.Equal(2, getCasesByUserResponseModel.CaseInfos[3].UpdatedDate.Day);
+            Assert.Equal(1, getCasesByUserResponseModel.CaseInfos[4].UpdatedDate.Day);
+
+            Assert.NotNull(result);
         }
 
         [Fact]
@@ -188,16 +202,87 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            Assert.NotNull(result);
+            var getCasesByUserResponseModel = result.Value!;
+            Assert.Equal(5, getCasesByUserResponseModel.TotalRecordCount);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos.Count);
 
-            Assert.Equal(5, result.Value!.Count);
-
-            Assert.Equal(1, result.Value!.ToArray()[0].UpdatedDate.Day);
-            Assert.Equal(2, result.Value!.ToArray()[1].UpdatedDate.Day);
-            Assert.Equal(3, result.Value!.ToArray()[2].UpdatedDate.Day);
-            Assert.Equal(4, result.Value!.ToArray()[3].UpdatedDate.Day);
-            Assert.Equal(5, result.Value!.ToArray()[4].UpdatedDate.Day);
+            Assert.Equal(1, getCasesByUserResponseModel.CaseInfos[0].UpdatedDate.Day);
+            Assert.Equal(2, getCasesByUserResponseModel.CaseInfos[1].UpdatedDate.Day);
+            Assert.Equal(3, getCasesByUserResponseModel.CaseInfos[2].UpdatedDate.Day);
+            Assert.Equal(4, getCasesByUserResponseModel.CaseInfos[3].UpdatedDate.Day);
+            Assert.Equal(5, getCasesByUserResponseModel.CaseInfos[4].UpdatedDate.Day);
         }
+
+
+
+        [Fact]
+        public async Task Handle_GetCaseForUser_Pages()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var userName = fixture.Create<string>();
+            var userEmail = fixture.Create<string>();
+            var page1query = new GetCasesForUserQuery(userName,
+                userEmail,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                [
+                ],
+                null,
+                SortCriteria.UpdatedDateAscending,
+                1,
+                3);
+            var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
+
+            var academisation = FixtureAcademisationSummary(fixture, userEmail);
+
+            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            // Act
+            var resultPage1 = await handler.Handle(page1query, CancellationToken.None);
+
+            Assert.NotNull(resultPage1);
+            var resultPage1List = resultPage1.Value!;
+
+            Assert.Equal(5, resultPage1List.TotalRecordCount);
+            Assert.Equal(3, resultPage1List.CaseInfos.Count);
+
+            Assert.Equal(1, resultPage1List.CaseInfos[0].UpdatedDate.Day);
+            Assert.Equal(2, resultPage1List.CaseInfos[1].UpdatedDate.Day);
+            Assert.Equal(3, resultPage1List.CaseInfos[2].UpdatedDate.Day);
+
+            var page2query = new GetCasesForUserQuery(userName,
+                userEmail,
+                false,
+                true,
+                true,
+                true,
+                true,
+                true,
+                [
+                ],
+                null,
+                SortCriteria.UpdatedDateAscending,
+                2,
+                3);
+
+
+            var resultPage2 = await handler.Handle(page2query, CancellationToken.None);
+
+            Assert.NotNull(resultPage2);
+            var resultPage2List = resultPage2.Value!;
+
+            Assert.Equal(5, resultPage2List.TotalRecordCount);
+            Assert.Equal(2, resultPage2List.CaseInfos.Count);
+
+            Assert.Equal(4, resultPage2List.CaseInfos[0].UpdatedDate.Day);
+            Assert.Equal(5, resultPage2List.CaseInfos[1].UpdatedDate.Day);
+
+        }
+
 
         private static IGetAcademisationSummary FixtureAcademisationSummary(Fixture fixture, string userEmail)
         {

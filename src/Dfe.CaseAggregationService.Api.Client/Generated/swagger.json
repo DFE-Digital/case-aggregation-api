@@ -109,13 +109,31 @@
             "x-position": 11
           },
           {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 12
+          },
+          {
+            "name": "recordCount",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 13
+          },
+          {
             "name": "api-version",
             "in": "query",
             "schema": {
               "type": "string",
               "nullable": true
             },
-            "x-position": 12
+            "x-position": 14
           }
         ],
         "responses": {
@@ -124,10 +142,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserCaseInfo"
-                  }
+                  "$ref": "#/components/schemas/GetCasesByUserResponseModel"
                 }
               }
             }
@@ -297,6 +312,22 @@
   },
   "components": {
     "schemas": {
+      "GetCasesByUserResponseModel": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalRecordCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "caseInfos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserCaseInfo"
+            }
+          }
+        }
+      },
       "UserCaseInfo": {
         "type": "object",
         "additionalProperties": false,

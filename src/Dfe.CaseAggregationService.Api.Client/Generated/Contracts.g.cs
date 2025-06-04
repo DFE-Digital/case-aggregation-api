@@ -30,7 +30,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <returns>A Person object representing the Principal.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, string api_version);
+        System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -38,7 +38,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <returns>A Person object representing the Principal.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<System.Collections.ObjectModel.ObservableCollection<UserCaseInfo>> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, string api_version, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken);
 
     }
 
@@ -112,6 +112,30 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// <returns>Task queued successfully.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<bool> CreateReportAsync(CreateReportCommand request, System.Threading.CancellationToken cancellationToken);
+
+    }
+
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "14.1.0.0 (NJsonSchema v11.0.2.0 (Newtonsoft.Json v13.0.0.0))")]
+    public partial class GetCasesByUserResponseModel
+    {
+        [Newtonsoft.Json.JsonProperty("totalRecordCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int TotalRecordCount { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("caseInfos", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.List<UserCaseInfo> CaseInfos { get; set; }
+
+        public string ToJson()
+        {
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
+        public static GetCasesByUserResponseModel FromJson(string data)
+        {
+
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<GetCasesByUserResponseModel>(data, new Newtonsoft.Json.JsonSerializerSettings());
+
+        }
 
     }
 

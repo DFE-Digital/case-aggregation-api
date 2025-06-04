@@ -1,18 +1,12 @@
 using Asp.Versioning;
 using Dfe.CaseAggregationService.Application.Common.Models;
-using Dfe.CaseAggregationService.Application.Schools.Commands.CreateReport;
-using Dfe.CaseAggregationService.Application.Schools.Commands.CreateSchool;
-using Dfe.CaseAggregationService.Application.Schools.Queries.GetPrincipalBySchool;
-using Dfe.CaseAggregationService.Application.Schools.Queries.GetPrincipalsBySchools;
-using Dfe.CaseAggregationService.Domain.ValueObjects;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser;
 using Dfe.CaseAggregationService.Application.Common.Exceptions;
-using Dfe.CaseAggregationService.Infrastructure.Security.Configurations;
+using Dfe.CaseAggregationService.Api.ResponseModels;
 
 namespace Dfe.CaseAggregationService.Api.Controllers
 {
@@ -24,25 +18,27 @@ namespace Dfe.CaseAggregationService.Api.Controllers
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
-        /// <param name="schoolName">The school name.</param>
-        /// <param name="includeWarningNotices"></param>
-        /// <param name="filterProjectTypes"></param>
-        /// <param name="cancellationToken">The cancellation token.</param>
-        /// <param name="userEmail"></param>
-        /// <param name="userName"></param>
-        /// <param name="includeSignificantChange"></param>
-        /// <param name="includePrepare"></param>
-        /// <param name="includeComplete"></param>
-        /// <param name="includeManageFreeSchools"></param>
-        /// <param name="includeConcerns"></param>
         //[Authorize(Policy = PolicyNames.CanRead)]
         [HttpGet("/user/")]
-        [SwaggerResponse(200, "A Person object representing the Principal.", typeof(List<UserCaseInfo>))]
+        [SwaggerResponse(200, "A Person object representing the Principal.", typeof(GetCasesByUserResponseModel))]
         [SwaggerResponse(404, "School not found.")]
         [SwaggerResponse(400, "School cannot be null or empty.")]
-        public async Task<IActionResult> GetCasesByUser([FromQuery] string userEmail, [FromQuery] string userName, [FromQuery] bool includeSignificantChange, [FromQuery] bool includePrepare, [FromQuery] bool includeComplete, [FromQuery] bool includeManageFreeSchools, [FromQuery] bool includeConcerns, [FromQuery] bool includeWarningNotices, [FromQuery] string? searchTerm, [FromQuery] string[] filterProjectTypes, [FromQuery] SortCriteria sortCriteria, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetCasesByUser([FromQuery] string userEmail,
+            [FromQuery] string userName,
+            [FromQuery] bool includeSignificantChange,
+            [FromQuery] bool includePrepare,
+            [FromQuery] bool includeComplete,
+            [FromQuery] bool includeManageFreeSchools,
+            [FromQuery] bool includeConcerns,
+            [FromQuery] bool includeWarningNotices,
+            [FromQuery] string? searchTerm,
+            [FromQuery] string[] filterProjectTypes,
+            [FromQuery] SortCriteria sortCriteria,
+            [FromQuery] int page,
+            [FromQuery] int recordCount,
+            CancellationToken cancellationToken)
         {
-            var result = await sender.Send(new GetCasesForUserQuery(userName, userEmail, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, filterProjectTypes, searchTerm, sortCriteria), cancellationToken);
+            var result = await sender.Send(new GetCasesForUserQuery(userName, userEmail, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, filterProjectTypes, searchTerm, sortCriteria, page, recordCount), cancellationToken);
 
             return !result.IsSuccess ? NotFound(new CustomProblemDetails(HttpStatusCode.NotFound, result.Error)) : Ok(result.Value);
         }

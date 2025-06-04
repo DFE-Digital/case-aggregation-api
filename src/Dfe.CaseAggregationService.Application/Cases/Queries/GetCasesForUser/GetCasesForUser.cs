@@ -30,16 +30,18 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         bool IncludeConcerns,
         bool IncludeWarningNotices,
         string[] FilterProjectTypes,
-        string? searchTerm = null,
-        SortCriteria? SortCriteria = SortCriteria.CreatedDateDescending) : IRequest<Result<List<UserCaseInfo>>>;
+        string? SearchTerm = null,
+        SortCriteria? SortCriteria = SortCriteria.CreatedDateDescending,
+        int Page = 1,
+        int RecordCount = 25) : IRequest<Result<GetCasesByUserResponseModel>>;
 
     public class GetCasesForUserQueryHandler(
         IGetAcademisationSummary getAcademisationSummary,
         IGetCaseInfo<AcademisationSummary> academisationMap,
         ILogger<GetCasesForUserQueryHandler> logger)
-        : IRequestHandler<GetCasesForUserQuery, Result<List<UserCaseInfo>>>
+        : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
     {
-        public async Task<Result<List<UserCaseInfo>>> Handle(GetCasesForUserQuery request,
+        public async Task<Result<GetCasesByUserResponseModel>> Handle(GetCasesForUserQuery request,
             CancellationToken cancellationToken)
         {
             logger.LogInformation("Gathering cases for user");
@@ -54,7 +56,7 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                 bool includeTransfers = request.FilterProjectTypes.Contains("Transfer");
                 bool includeFormAMat = request.FilterProjectTypes.Contains("Form a MAT");
 
-                listOfTasks.Add(getAcademisationSummary.GetAcademisationSummaries(request.UserEmail, includeConversions, includeTransfers, includeFormAMat, request.searchTerm)
+                listOfTasks.Add(getAcademisationSummary.GetAcademisationSummaries(request.UserEmail, includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
                     .ContinueWith(ProcessAcademisation, cancellationToken));
             }
 
@@ -69,10 +71,15 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
             listOfTasks.ForEach(x => userCaseInfo.AddRange(x.Result));
 
+            var returnModel = new GetCasesByUserResponseModel();
+
+            returnModel.TotalRecordCount = userCaseInfo.Count;
+
             SortOutput(request, userCaseInfo);
 
+            returnModel.CaseInfos = userCaseInfo.Skip((request.Page - 1) * request.RecordCount).Take(request.RecordCount).ToList();
 
-            return Result<List<UserCaseInfo>>.Success(userCaseInfo);
+            return Result<GetCasesByUserResponseModel>.Success(returnModel);
 
         }
 
