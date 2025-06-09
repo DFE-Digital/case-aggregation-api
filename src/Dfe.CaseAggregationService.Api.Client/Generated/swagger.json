@@ -357,6 +357,18 @@
             "items": {
               "$ref": "#/components/schemas/CaseInfoItem"
             }
+          },
+          "guidance": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkItem"
+            }
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LinkItem"
+            }
           }
         }
       },
@@ -370,6 +382,19 @@
           "value": {
             "type": "string",
             "nullable": true
+          },
+          "link": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "LinkItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "title": {
+            "type": "string"
           },
           "link": {
             "type": "string",

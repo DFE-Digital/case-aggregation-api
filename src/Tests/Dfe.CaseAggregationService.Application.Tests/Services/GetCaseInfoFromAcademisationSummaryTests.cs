@@ -1,5 +1,7 @@
 ﻿using Dfe.CaseAggregationService.Application.Services.Builders;
+using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using NSubstitute;
 
 namespace Dfe.CaseAggregationService.Application.Tests.Services
 {
@@ -19,7 +21,13 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
 
             academySummary.Urn = 123456;
 
-            var underTest = new GetCaseInfoFromAcademisationSummary();
+            var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
+            getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+
+            var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
+            getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+            
+            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks);
 
             var caseInfo = underTest.GetCaseInfo(academySummary);
             
@@ -62,8 +70,15 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             };
 
             academySummary.Urn = 123456;
+            
+            var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
+            getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
 
-            var underTest = new GetCaseInfoFromAcademisationSummary();
+            var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
+            getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+
+            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks);
+
 
             var caseInfo = underTest.GetCaseInfo(academySummary);
 

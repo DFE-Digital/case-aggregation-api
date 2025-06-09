@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using Dfe.CaseAggregationService.Application.Services.Builders;
+using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -35,7 +36,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddAutoMapper(typeof(TransferInfoProfile));
 
             services.AddScoped<IGetCaseInfo<AcademisationSummary>, GetCaseInfoFromAcademisationSummary>();
-            
+            services.AddScoped<IGetGuidanceLinks, GetGuidanceLinks>();
+            services.AddScoped<IGetResourcesLinks, GetResourcesLinks>();
+
             services.AddBackgroundService();
 
             return services;

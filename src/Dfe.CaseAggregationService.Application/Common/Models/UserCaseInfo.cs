@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Dfe.CaseAggregationService.Domain.Entities.Academisation;
-
-namespace Dfe.CaseAggregationService.Application.Common.Models
+﻿namespace Dfe.CaseAggregationService.Application.Common.Models
 {
-    public class UserCaseInfo(IEnumerable<CaseInfoItem> info, string title, string titleLink, string system, string projectType, DateTime createdDate, DateTime updatedDate)
+    public class UserCaseInfo(
+        string title,
+        string titleLink,
+        string system,
+        string projectType,
+        DateTime createdDate,
+        DateTime updatedDate,
+        IEnumerable<CaseInfoItem> info,
+        IEnumerable<LinkItem> guidance,
+        IEnumerable<LinkItem> resources)
     {
         public string Title { get; init; } = title;
         public string TitleLink { get; init; } = titleLink;
@@ -17,7 +19,11 @@ namespace Dfe.CaseAggregationService.Application.Common.Models
         public DateTime UpdatedDate { get; init; } = updatedDate;
 
         public IEnumerable<CaseInfoItem> Info { get; init; } = info;
+        public IEnumerable<LinkItem> Guidance { get; init; } = guidance;
+        public IEnumerable<LinkItem> Resources { get; init; } = resources;
+
     }
 
     public record CaseInfoItem(string Label, string? Value, string? Link);
+    public record LinkItem(string Title, string? Link);
 }

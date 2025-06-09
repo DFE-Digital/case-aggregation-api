@@ -1,16 +1,58 @@
 ﻿using Dfe.CaseAggregationService.Application.Common.Models;
+using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 
 namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
-    public class GetCaseInfoFromAcademisationSummary: IGetCaseInfo<AcademisationSummary>
+    public class GetCaseInfoFromAcademisationSummary(IGetGuidanceLinks getGuidanceLinks, IGetResourcesLinks getResourcesLinks) : IGetCaseInfo<AcademisationSummary>
     {
         private const string System = "Prepare conversions and transfers";
         public UserCaseInfo GetCaseInfo(AcademisationSummary summary)
         {
             var caseSummaryInfo = summary.TransfersSummary != null ? GetTransferInfo(summary): GetConversionInfo(summary);
-            
-            return new UserCaseInfo(caseSummaryInfo, GetTitle(summary), "/", System, GetProjectType(summary), summary.CreatedOn ?? DateTime.MinValue, summary.LastModifiedOn ?? DateTime.MinValue);
+            var guidance = GenerateGuidanceLinkItems(summary);
+            var resources = GenerateResourcesLinkItems(summary);
+            return new UserCaseInfo(GetTitle(summary), $"https://dev.prepare-conversions.education.gov.uk/task-list/{summary.Id}", System, GetProjectType(summary), summary.CreatedOn ?? DateTime.MinValue, summary.LastModifiedOn ?? DateTime.MinValue, caseSummaryInfo, guidance, resources);
+        }
+
+        private IEnumerable<LinkItem> GenerateGuidanceLinkItems(AcademisationSummary summary)
+        {
+            if (summary.ConversionsSummary != null)
+            {
+                return summary.ConversionsSummary?.AcademyTypeAndRoute switch
+                {
+                    "Converter" => getGuidanceLinks.GenerateLinkItems("PrepareVoluntaryConversion"),
+                    "Sponsored" => getGuidanceLinks.GenerateLinkItems("PrepareSponsoredConversion"),
+                    _ => []
+                };
+            }
+
+            if (summary.TransfersSummary != null)
+            {
+                return getGuidanceLinks.GenerateLinkItems("PrepareTransfer");
+            }
+
+            return [];
+        }
+
+        private IEnumerable<LinkItem> GenerateResourcesLinkItems(AcademisationSummary summary)
+        {
+            if (summary.ConversionsSummary != null)
+            {
+                return summary.ConversionsSummary?.AcademyTypeAndRoute switch
+                {
+                    "Converter" => getResourcesLinks.GenerateLinkItems("PrepareVoluntaryConversion"),
+                    "Sponsored" => getResourcesLinks.GenerateLinkItems("PrepareSponsoredConversion"),
+                    _ => []
+                };
+            }
+
+            if (summary.TransfersSummary != null)
+            {
+                return getResourcesLinks.GenerateLinkItems("PrepareTransfer");
+            }
+
+            return [];
         }
 
         private static string GetTitle(AcademisationSummary summary)
@@ -39,37 +81,27 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
                 yield return new CaseInfoItem("Advisory board date", summary.ConversionsSummary.ConversionTransferDate.Value.ToString("dd/MM/yyyy"), null);
             yield return new CaseInfoItem("Incoming trust", summary.ConversionsSummary.NameOfTrust!, null);
             yield return new CaseInfoItem("Local authority", summary.ConversionsSummary.LocalAuthority!, null);
-            /*
-
-School name
-               URN
-               Advisory board date
-               Incoming trust
-               Local authority
-
-             */
+            yield return new CaseInfoItem("Route", ProcessConversionRoute(summary), null);
         }
 
         private static IEnumerable<CaseInfoItem> GetTransferInfo(AcademisationSummary summary)
         {
             yield return new CaseInfoItem("URN", summary.Urn.ToString(), null);
-            
             yield return new CaseInfoItem("Proposed transfer date", summary.TransfersSummary.TargetDateForTransfer.Value.ToString("dd/MM/yyyy"), null);
             yield return new CaseInfoItem("Incoming trust", summary.TransfersSummary.IncomingTrustName!, null);
             yield return new CaseInfoItem("Outgoing trust", summary.TransfersSummary.OutgoingTrustName!, null);
+            yield return new CaseInfoItem("Route", summary.TransfersSummary.TypeOfTransfer, null);
+        }
 
-            /*
-            
-            Case type
-               Academy name
-               URN
-               Proposed transfer date
-               Incoming trust
-               Outgoing trust
-               Reason 
-               LA
+        private static string? ProcessConversionRoute(AcademisationSummary input)
+        {
+            return input.ConversionsSummary?.AcademyTypeAndRoute switch
+            {
+                "Converter" => "Voluntary conversion",
+                "Sponsored" => "Sponsored conversion",
+                _ => null
+            };
 
-             */
         }
     }
 }

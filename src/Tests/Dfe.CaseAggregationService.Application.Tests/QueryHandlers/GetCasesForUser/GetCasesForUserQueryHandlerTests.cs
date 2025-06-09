@@ -1,7 +1,9 @@
-﻿using AutoFixture;
+﻿using System.Security.Cryptography.Pkcs;
+using AutoFixture;
 using Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Application.Services.Builders;
+using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 using Dfe.CaseAggregationService.Domain.Interfaces.Services;
 using Microsoft.Extensions.Logging;
@@ -27,7 +29,8 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
                 fixture.Create<AcademisationSummary>()
             ]);
 
-            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
+            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
             
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -63,8 +66,8 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 
             var academisation = FixtureAcademisationSummary(fixture, userEmail);
 
-            var mapper = new GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
+            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -81,6 +84,18 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             Assert.Equal(3, getCasesByUserResponseModel.CaseInfos[2].CreatedDate.Day);
             Assert.Equal(2, getCasesByUserResponseModel.CaseInfos[3].CreatedDate.Day);
             Assert.Equal(1, getCasesByUserResponseModel.CaseInfos[4].CreatedDate.Day);
+        }
+
+        private static GetCaseInfoFromAcademisationSummary GetCaseInfoFromAcademisationSummary()
+        {
+            var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
+            getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+
+            var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
+            getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+
+            var mapper = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks);
+            return mapper;
         }
 
         [Fact]
@@ -107,7 +122,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 
             var academisation = FixtureAcademisationSummary(fixture, userEmail);
 
-            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
+            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
+
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -151,7 +168,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 
             var academisation = FixtureAcademisationSummary(fixture, userEmail);
 
-            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
+            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
+
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -197,7 +216,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 
             var academisation = FixtureAcademisationSummary(fixture, userEmail);
 
-            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
+            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
+
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -240,7 +261,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 
             var academisation = FixtureAcademisationSummary(fixture, userEmail);
 
-            var handler = new GetCasesForUserQueryHandler(academisation, new GetCaseInfoFromAcademisationSummary(), logger);
+            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
+            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
+
             // Act
             var resultPage1 = await handler.Handle(page1query, CancellationToken.None);
 
