@@ -19,9 +19,6 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
         {
             factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
 
-            // Arrange
-            //var trustDto = fixture.Customize(new TrustDtoCustomization { Ukprn = project.IncomingTrustUkprn.Value.ToString() }).Create<TrustDto>();
-
             var academySummary = new AcademisationSummary()
             {
                 Id = 1,

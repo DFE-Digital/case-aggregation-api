@@ -138,7 +138,7 @@
         ],
         "responses": {
           "200": {
-            "description": "A Person object representing the Principal.",
+            "description": "Projects and Cases for the provided user.",
             "content": {
               "application/json": {
                 "schema": {
@@ -147,11 +147,8 @@
               }
             }
           },
-          "404": {
-            "description": "School not found."
-          },
           "400": {
-            "description": "School cannot be null or empty."
+            "description": "User name cannot be null or empty.\nor\nUser email cannot be null or empty."
           }
         }
       }

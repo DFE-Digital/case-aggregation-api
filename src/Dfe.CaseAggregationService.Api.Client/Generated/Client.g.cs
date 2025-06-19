@@ -75,7 +75,7 @@ namespace Dfe.CaseAggregationService.Client
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
-        /// <returns>A Person object representing the Principal.</returns>
+        /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version)
         {
@@ -86,7 +86,7 @@ namespace Dfe.CaseAggregationService.Client
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
-        /// <returns>A Person object representing the Principal.</returns>
+        /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         public virtual async System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken)
         {
@@ -195,16 +195,10 @@ namespace Dfe.CaseAggregationService.Client
                             return objectResponse_.Object;
                         }
                         else
-                        if (status_ == 404)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new CaseAggregationServiceApiException("School not found.", status_, responseText_, headers_, null);
-                        }
-                        else
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new CaseAggregationServiceApiException("School cannot be null or empty.", status_, responseText_, headers_, null);
+                            throw new CaseAggregationServiceApiException("User name cannot be null or empty.\nor\nUser email cannot be null or empty.", status_, responseText_, headers_, null);
                         }
                         else
                         {

@@ -28,7 +28,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
-        /// <returns>A Person object representing the Principal.</returns>
+        /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version);
 
@@ -36,7 +36,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
-        /// <returns>A Person object representing the Principal.</returns>
+        /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken);
 

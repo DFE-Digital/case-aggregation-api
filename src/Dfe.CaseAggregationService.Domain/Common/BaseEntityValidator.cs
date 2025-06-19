@@ -1,7 +1,9 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 
 namespace Dfe.CaseAggregationService.Domain.Common
 {
+    [ExcludeFromCodeCoverage]
     public abstract class BaseEntityValidator<T> : AbstractValidator<T> where T : class
     {
         protected BaseEntityValidator()

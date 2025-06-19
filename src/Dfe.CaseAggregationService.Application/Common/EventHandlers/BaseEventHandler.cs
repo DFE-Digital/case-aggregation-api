@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Dfe.CaseAggregationService.Domain.Common;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -5,6 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace Dfe.CaseAggregationService.Application.Common.EventHandlers
 {
 #pragma warning disable S2629, S2139
+    [ExcludeFromCodeCoverage]
     public abstract class BaseEventHandler<TEvent>(ILogger<BaseEventHandler<TEvent>> logger)
         : INotificationHandler<TEvent>
         where TEvent : IDomainEvent

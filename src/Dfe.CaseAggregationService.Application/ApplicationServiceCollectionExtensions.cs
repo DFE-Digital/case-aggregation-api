@@ -1,5 +1,4 @@
 using Dfe.CaseAggregationService.Application.Common.Behaviours;
-using Dfe.CaseAggregationService.Application.MappingProfiles;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Configuration;
@@ -30,9 +29,6 @@ namespace Microsoft.Extensions.DependencyInjection
                     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
                 }
             });
-
-            services.AddAutoMapper(typeof(ConversionInfoProfile));
-            services.AddAutoMapper(typeof(TransferInfoProfile));
 
             services.AddScoped<IGetCaseInfo<AcademisationSummary>, GetCaseInfoFromAcademisationSummary>();
             services.AddScoped<IGetGuidanceLinks, GetGuidanceLinks>();

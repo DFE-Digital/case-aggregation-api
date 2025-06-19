@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Dfe.CaseAggregationService.Application.Common.Exceptions
 {
+    [ExcludeFromCodeCoverage]
     public class CustomProblemDetails : ProblemDetails
     {
         public CustomProblemDetails(HttpStatusCode statusCode, string? detail = null)

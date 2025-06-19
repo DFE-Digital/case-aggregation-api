@@ -21,9 +21,9 @@ namespace Dfe.CaseAggregationService.Api.Controllers
         /// </summary>
         [Authorize(Policy = PolicyNames.CanRead)]
         [HttpGet("/user/")]
-        [SwaggerResponse(200, "A Person object representing the Principal.", typeof(GetCasesByUserResponseModel))]
-        [SwaggerResponse(404, "School not found.")]
-        [SwaggerResponse(400, "School cannot be null or empty.")]
+        [SwaggerResponse(200, "Projects and Cases for the provided user.", typeof(GetCasesByUserResponseModel))]
+        [SwaggerResponse(400, "User name cannot be null or empty.")]
+        [SwaggerResponse(400, "User email cannot be null or empty.")]
         public async Task<IActionResult> GetCasesByUser([FromQuery] string userEmail,
             [FromQuery] string userName,
             [FromQuery] bool includeSignificantChange,

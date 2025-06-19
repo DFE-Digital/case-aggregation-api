@@ -20,6 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="MappingProfiles\" />
     <Folder Include="Schools\Commands\" />
     <Folder Include="Schools\EventHandlers\" />
     <Folder Include="Schools\Models\" />

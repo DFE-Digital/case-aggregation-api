@@ -1,7 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Dfe.CaseAggregationService.Domain.Common
 {
+    [ExcludeFromCodeCoverage]
     public abstract class BaseAggregateRoot : IAggregateRoot
     {
         private readonly List<IDomainEvent> _domainEvents = new();
