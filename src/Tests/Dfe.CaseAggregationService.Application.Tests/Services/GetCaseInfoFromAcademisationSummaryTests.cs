@@ -16,8 +16,10 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             {
                 IncomingTrustName = "Academy Name",
                 OutgoingTrustName = "Outgoing Trust Name",
-                TargetDateForTransfer = new DateTime(2010, 9, 8)
+                TargetDateForTransfer = new DateTime(2010, 9, 8),
+                TypeOfTransfer = "Transfer Type"
             };
+
 
             academySummary.Urn = 123456;
 
@@ -26,8 +28,11 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
 
             var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
             getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
-            
-            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks);
+
+            var getSystemLinks = Substitute.For<IGetSystemLinks>();
+            getSystemLinks.GetPrepareTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
+
+            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
 
             var caseInfo = underTest.GetCaseInfo(academySummary);
             
@@ -35,10 +40,10 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             
             Assert.Equal("Transfer", caseInfo.ProjectType);
             Assert.Equal("Prepare conversions and transfers", caseInfo.System);
-            Assert.Equal("/", caseInfo.TitleLink);
+            Assert.Equal("http://TitleLink", caseInfo.TitleLink);
             Assert.Equal("Academy Name", caseInfo.Title);
 
-            Assert.Equal(4, caseInfo.Info.Count());
+            Assert.Equal(5, caseInfo.Info.Count());
             var info = caseInfo.Info.ToArray();
 
             Assert.Equal("URN", info[0].Label);
@@ -53,6 +58,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             Assert.Equal("Outgoing trust", info[3].Label);
             Assert.Equal("Outgoing Trust Name", info[3].Value);
             Assert.Null(info[3].Link);
+            Assert.Equal("Route", info[4].Label);
+            Assert.Equal("Transfer Type", info[4].Value);
+            Assert.Null(info[4].Link);
 
         }
 
@@ -64,9 +72,10 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             academySummary.ConversionsSummary = new ConversionsSummary()
             {
                 SchoolName = "Academy Name",
-                LocalAuthority = "Local Authority",
+                LocalAuthority = "LA Name",
                 NameOfTrust = "Trust Name",
-                ConversionTransferDate = new DateTime(2010, 9, 8)
+                ConversionTransferDate = new DateTime(2010, 9, 8),
+                AcademyTypeAndRoute = "Converter"
             };
 
             academySummary.Urn = 123456;
@@ -77,19 +86,21 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
             getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
 
-            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks);
+            var getSystemLinks = Substitute.For<IGetSystemLinks>();
+            getSystemLinks.GetPrepareTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
 
-
+            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
+            
             var caseInfo = underTest.GetCaseInfo(academySummary);
 
             Assert.NotNull(caseInfo);
 
             Assert.Equal("Conversion", caseInfo.ProjectType);
             Assert.Equal("Prepare conversions and transfers", caseInfo.System);
-            Assert.Equal("/", caseInfo.TitleLink);
+            Assert.Equal("http://TitleLink", caseInfo.TitleLink);
             Assert.Equal("Academy Name", caseInfo.Title);
 
-            Assert.Equal(4, caseInfo.Info.Count());
+            Assert.Equal(5, caseInfo.Info.Count());
             var info = caseInfo.Info.ToArray();
 
             Assert.Equal("URN", info[0].Label);
@@ -102,8 +113,11 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             Assert.Equal("Trust Name", info[2].Value);
             Assert.Null(info[2].Link);
             Assert.Equal("Local authority", info[3].Label);
-            Assert.Equal("Local Authority", info[3].Value);
+            Assert.Equal("LA Name", info[3].Value);
             Assert.Null(info[3].Link);
+            Assert.Equal("Route", info[4].Label);
+            Assert.Equal("Voluntary conversion", info[4].Value);
+            Assert.Null(info[4].Link);
 
         }
     }

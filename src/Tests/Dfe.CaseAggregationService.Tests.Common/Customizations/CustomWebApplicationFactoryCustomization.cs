@@ -59,7 +59,6 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
                 fixture.Inject(factory);
                 fixture.Inject(serviceProvider);
                 fixture.Inject(client);
-                fixture.Inject(serviceProvider.GetRequiredService<ISchoolsClient>());
                 fixture.Inject(new List<Claim>());
 
                 return factory;

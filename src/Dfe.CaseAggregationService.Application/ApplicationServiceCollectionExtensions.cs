@@ -30,14 +30,14 @@ namespace Microsoft.Extensions.DependencyInjection
                     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(PerformanceBehaviour<,>));
                 }
             });
-            
-            services.AddAutoMapper(typeof(SchoolProfile));
+
             services.AddAutoMapper(typeof(ConversionInfoProfile));
             services.AddAutoMapper(typeof(TransferInfoProfile));
 
             services.AddScoped<IGetCaseInfo<AcademisationSummary>, GetCaseInfoFromAcademisationSummary>();
             services.AddScoped<IGetGuidanceLinks, GetGuidanceLinks>();
             services.AddScoped<IGetResourcesLinks, GetResourcesLinks>();
+            services.AddScoped<IGetSystemLinks, GetSystemLinks>();
 
             services.AddBackgroundService();
 

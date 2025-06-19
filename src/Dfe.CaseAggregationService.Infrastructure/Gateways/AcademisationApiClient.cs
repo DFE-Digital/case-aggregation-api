@@ -44,7 +44,6 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 queryParams.Add("searchTerm", searchTerm);
             }
 
-
             var url = QueryHelpers.AddQueryString(baseUrl, queryParams);
 
             var result = await Get<IEnumerable<AcademisationSummary>>(url);

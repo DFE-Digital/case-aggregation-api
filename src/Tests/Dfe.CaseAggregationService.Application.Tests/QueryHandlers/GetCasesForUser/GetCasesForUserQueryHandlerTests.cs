@@ -94,7 +94,10 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
             getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
 
-            var mapper = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks);
+            var getSystemLinks = Substitute.For<IGetSystemLinks>();
+            getSystemLinks.GetPrepareTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
+
+            var mapper = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
             return mapper;
         }
 

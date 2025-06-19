@@ -5,14 +5,13 @@ using Dfe.CaseAggregationService.Api;
 using Dfe.CaseAggregationService.Api.Client.Extensions;
 using Dfe.CaseAggregationService.Client;
 using Dfe.CaseAggregationService.Client.Contracts;
-using Dfe.CaseAggregationService.Infrastructure.Database;
-using Dfe.CaseAggregationService.Tests.Common.Seeders;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
 using System.Security.Claims;
+using Dfe.CaseAggregationService.Infrastructure.Gateways;
 
 namespace Dfe.CaseAggregationService.Tests.Common.Customizations
 {
@@ -25,10 +24,8 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
 
                 var factory = new CustomWebApplicationDbContextFactory<Program>()
                 {
-                    SeedData = new Dictionary<Type, Action<DbContext>>
-                    {
-                        { typeof(SclContext), context => SclContextSeeder.Seed((SclContext)context) },
-                    },
+                    UseWireMock = true,
+                    WireMockPort = 0,
                     ExternalServicesConfiguration = services =>
                     {
                         services.PostConfigure<AuthenticationOptions>(options =>
@@ -43,6 +40,24 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
                     ExternalHttpClientConfiguration = client =>
                     {
                         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "external-mock-token");
+                    },
+                    ExternalWireMockConfigOverride = (cfgBuilder, mockServer) =>
+                    {
+                        cfgBuilder.AddInMemoryCollection(new Dictionary<string, string?>
+                        {
+                            ["IntegrationTestOverride"] = "true",
+                            ["AcademisationApiClient:BaseUrl"] = mockServer.Urls[0].TrimEnd('/') + "/",
+                        });
+                    },
+                    ExternalWireMockClientRegistration = (services, config, wireHttp) =>
+                    {
+
+                        services.AddHttpClient("AcademisationApiClient", (serviceProvider, httpClient) =>
+                        {
+                            var wConfig = serviceProvider.GetRequiredService<IConfiguration>();
+
+                            httpClient.BaseAddress = new Uri(wConfig["AcademisationApiClient:BaseUrl"]!);
+                        });
                     }
                 };
 
@@ -51,19 +66,19 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
                 var config = new ConfigurationBuilder()
                     .AddInMemoryCollection(new Dictionary<string, string?>
                     {
-                        { "ApiClient:BaseUrl", client.BaseAddress!.ToString() }
+                        { "CaseAggregationApiClient:BaseUrl", client.BaseAddress!.ToString() }
                     })
                     .Build();
 
                 var services = new ServiceCollection();
                 services.AddSingleton<IConfiguration>(config);
-
+                services.AddCaseAggregationApiClient<ICasesClient, CasesClient>(config, client);
                 var serviceProvider = services.BuildServiceProvider();
 
                 fixture.Inject(factory);
                 fixture.Inject(serviceProvider);
                 fixture.Inject(client);
-                fixture.Inject(serviceProvider.GetRequiredService<ISchoolsClient>());
+                fixture.Inject(serviceProvider.GetRequiredService<ICasesClient>());
                 fixture.Inject(new List<Claim>());
 
                 return factory;

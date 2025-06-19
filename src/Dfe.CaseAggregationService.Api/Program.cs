@@ -106,9 +106,8 @@ namespace Dfe.CaseAggregationService.Api
                     
                 client.BaseAddress = new Uri(apiOptions.BaseUrl);
                 client.DefaultRequestHeaders.Add("x-api-key", apiOptions.ApiKey);
-                client.DefaultRequestHeaders.Add("User-Agent", "PrepareConversions/1.0");
+                client.DefaultRequestHeaders.Add("User-Agent", "CaseAggregationService/1.0");
             });
-
 
             var app = builder.Build();
 
@@ -178,8 +177,8 @@ namespace Dfe.CaseAggregationService.Api
 
             app.UseRouting();
 
-            //app.UseAuthentication();
-            //app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 

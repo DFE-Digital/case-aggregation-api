@@ -6,7 +6,8 @@ using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
 using Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser;
 using Dfe.CaseAggregationService.Application.Common.Exceptions;
-using Dfe.CaseAggregationService.Api.ResponseModels;
+using Dfe.CaseAggregationService.Infrastructure.Security.Configurations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dfe.CaseAggregationService.Api.Controllers
 {
@@ -18,7 +19,7 @@ namespace Dfe.CaseAggregationService.Api.Controllers
         /// <summary>
         /// Retrieve Principal by school name
         /// </summary>
-        //[Authorize(Policy = PolicyNames.CanRead)]
+        [Authorize(Policy = PolicyNames.CanRead)]
         [HttpGet("/user/")]
         [SwaggerResponse(200, "A Person object representing the Principal.", typeof(GetCasesByUserResponseModel))]
         [SwaggerResponse(404, "School not found.")]

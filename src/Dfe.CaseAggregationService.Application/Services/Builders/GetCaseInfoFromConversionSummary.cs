@@ -4,7 +4,7 @@ using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 
 namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
-    public class GetCaseInfoFromAcademisationSummary(IGetGuidanceLinks getGuidanceLinks, IGetResourcesLinks getResourcesLinks) : IGetCaseInfo<AcademisationSummary>
+    public class GetCaseInfoFromAcademisationSummary(IGetGuidanceLinks getGuidanceLinks, IGetResourcesLinks getResourcesLinks, IGetSystemLinks getSystemLinks) : IGetCaseInfo<AcademisationSummary>
     {
         private const string System = "Prepare conversions and transfers";
         public UserCaseInfo GetCaseInfo(AcademisationSummary summary)
@@ -12,7 +12,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
             var caseSummaryInfo = summary.TransfersSummary != null ? GetTransferInfo(summary): GetConversionInfo(summary);
             var guidance = GenerateGuidanceLinkItems(summary);
             var resources = GenerateResourcesLinkItems(summary);
-            return new UserCaseInfo(GetTitle(summary), $"https://dev.prepare-conversions.education.gov.uk/task-list/{summary.Id}", System, GetProjectType(summary), summary.CreatedOn ?? DateTime.MinValue, summary.LastModifiedOn ?? DateTime.MinValue, caseSummaryInfo, guidance, resources);
+            return new UserCaseInfo(GetTitle(summary), getSystemLinks.GetPrepareTitleLink(summary.Id.ToString()), System, GetProjectType(summary), summary.CreatedOn ?? DateTime.MinValue, summary.LastModifiedOn ?? DateTime.MinValue, caseSummaryInfo, guidance, resources);
         }
 
         private IEnumerable<LinkItem> GenerateGuidanceLinkItems(AcademisationSummary summary)
