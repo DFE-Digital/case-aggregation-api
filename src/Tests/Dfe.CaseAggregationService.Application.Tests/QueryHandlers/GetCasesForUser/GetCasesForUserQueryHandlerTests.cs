@@ -5,7 +5,7 @@ using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
-using Dfe.CaseAggregationService.Domain.Interfaces.Services;
+using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -22,7 +22,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             var userEmail = fixture.Create<string>();
             var query = new GetCasesForUserQuery(userName, userEmail, true, true, true, true, true, true, []);
 
-            var academisation = Substitute.For<IGetAcademisationSummary>();
+            var academisation = Substitute.For<IAcademisationRepository>();
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
 
             academisation.GetAcademisationSummaries(userEmail, false, false, false, null).Returns([
@@ -310,9 +310,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
         }
 
 
-        private static IGetAcademisationSummary FixtureAcademisationSummary(Fixture fixture, string userEmail)
+        private static IAcademisationRepository FixtureAcademisationSummary(Fixture fixture, string userEmail)
         {
-            var academisation = Substitute.For<IGetAcademisationSummary>();
+            var academisation = Substitute.For<IAcademisationRepository>();
 
             var fix1 = fixture.Create<AcademisationSummary>();
             fix1.CreatedOn = new DateTime(2001, 01, 01);

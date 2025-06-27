@@ -1,11 +1,11 @@
 ﻿using Dfe.CaseAggregationService.Domain.Entities.Academisation;
-using Dfe.CaseAggregationService.Domain.Interfaces.Services;
+using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
 namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 {
-    public class AcademisationApiClient : ApiClient, IGetAcademisationSummary
+    public class AcademisationApiClient : ApiClient, IAcademisationRepository
     {
         public AcademisationApiClient(
             IHttpClientFactory clientFactory, 

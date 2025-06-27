@@ -1,10 +1,10 @@
 ﻿using System.ComponentModel;
 using Dfe.CaseAggregationService.Application.Common.Models;
-using Dfe.CaseAggregationService.Domain.Interfaces.Services;
 using MediatR;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
 using Microsoft.Extensions.Logging;
+using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 
 namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 {
@@ -36,7 +36,7 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         int RecordCount = 25) : IRequest<Result<GetCasesByUserResponseModel>>;
 
     public class GetCasesForUserQueryHandler(
-        IGetAcademisationSummary getAcademisationSummary,
+        IAcademisationRepository academisationRepository,
         IGetCaseInfo<AcademisationSummary> academisationMap,
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
@@ -56,7 +56,7 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                 bool includeTransfers = request.FilterProjectTypes.Contains("Transfer");
                 bool includeFormAMat = request.FilterProjectTypes.Contains("Form a MAT");
 
-                listOfTasks.Add(getAcademisationSummary.GetAcademisationSummaries(request.UserEmail, includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
+                listOfTasks.Add(academisationRepository.GetAcademisationSummaries(request.UserEmail, includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
                     .ContinueWith(ProcessAcademisation, cancellationToken));
             }
 
