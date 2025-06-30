@@ -109,6 +109,15 @@ namespace Dfe.CaseAggregationService.Api
                 client.DefaultRequestHeaders.Add("User-Agent", "CaseAggregationService/1.0");
             });
 
+            builder.Services.AddHttpClient("RecastApiClient", (sp, client) =>
+            {
+                ApiUsingKeyOptions apiOptions = builder.Configuration.GetRequiredSection("RecastApiClient").Get<ApiUsingKeyOptions>();
+                    
+                client.BaseAddress = new Uri(apiOptions.BaseUrl);
+                client.DefaultRequestHeaders.Add("ApiKey", apiOptions.ApiKey);
+                client.DefaultRequestHeaders.Add("User-Agent", "CaseAggregationService/1.0");
+            });
+
             var app = builder.Build();
 
             var forwardOptions = new ForwardedHeadersOptions

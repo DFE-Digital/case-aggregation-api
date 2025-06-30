@@ -3,6 +3,7 @@ using Dfe.CaseAggregationService.Application.Common.Models;
 using MediatR;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Microsoft.Extensions.Logging;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 
@@ -38,6 +39,8 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
     public class GetCasesForUserQueryHandler(
         IAcademisationRepository academisationRepository,
         IGetCaseInfo<AcademisationSummary> academisationMap,
+        IRecastRepository recastRepository,
+        IGetCaseInfo<RecastSummary> recastMap,
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
     {
@@ -58,6 +61,12 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
                 listOfTasks.Add(academisationRepository.GetAcademisationSummaries(request.UserEmail, includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
                     .ContinueWith(ProcessAcademisation, cancellationToken));
+            }
+
+            if (request.IncludeConcerns)
+            {
+                listOfTasks.Add(recastRepository.GetRecastSummaries(request.UserEmail)
+                    .ContinueWith(ProcessRecast, cancellationToken));
             }
 
             try
@@ -101,6 +110,17 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             {
                 var academisation = cases.Result.ToList();
                 return academisation.Select(academisationMap.GetCaseInfo);
+            }
+
+            return [];
+        }
+
+        private IEnumerable<UserCaseInfo> ProcessRecast(Task<IEnumerable<RecastSummary>> cases)
+        {
+            if (!cases.IsFaulted)
+            {
+                var recast = cases.Result.ToList();
+                return recast.Select(recastMap.GetCaseInfo);
             }
 
             return [];
