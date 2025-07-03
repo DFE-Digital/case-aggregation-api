@@ -43,6 +43,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var output = result.Data.Where(x => x.ActiveConcerns.Any()).Select(x => new RecastSummary
             {
+                Id = x.CaseUrn,
                 CaseType = GetCaseType(x),
                 TrustName = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.Name ?? "",
                 Trn = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.ReferenceNumber ?? "",

@@ -22,7 +22,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
         public string GetRecastTitleLink(params string[] formatKeys)
         {
-            return string.Format("https://dev.prepare-conversions.education.gov.uk/task-list/{0}", formatKeys);
+            return string.Format("https://dev.record-concerns-support-trusts.education.gov.uk/case/{0}/management", formatKeys);
         }
     }
 }

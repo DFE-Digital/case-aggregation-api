@@ -13,7 +13,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
             GenerateGuidanceLinkItems(summary);
             getResourcesLinks.GenerateLinkItems("Recast");
             return new UserCaseInfo(GetTitle(summary),
-                getSystemLinks.GetRecastTitleLink(summary.Trn),
+                getSystemLinks.GetRecastTitleLink(summary.Id.ToString()),
                 System,
                 summary.CaseType,
                 summary.DateCaseCreated,
