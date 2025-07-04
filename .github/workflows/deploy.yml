@@ -43,6 +43,18 @@ jobs:
           echo "checked-out-sha=${CHECKED_OUT_SHA}" >> $GITHUB_OUTPUT
           echo "image-name=${{ env.IMAGE_NAME }}" >> $GITHUB_OUTPUT
 
+  validate-packages:
+    runs-on: windows-latest
+    name: Package Validation
+    permissions:
+      contents: read
+    needs: [ set-env ]
+    steps:
+      - name: Validate Packages
+        uses: DFE-Digital/rsd-github-actions/.github/actions/validate-packages@9a7a6a7c9aa5914f76a1f34aee8dd2dcc00702bc # v1.1.2
+        with:
+          environment: ${{ needs.set-env.outputs.environment }}
+
   build-import-deploy:
     name: Deploy to ${{ needs.set-env.outputs.environment }}
     runs-on: ubuntu-24.04
