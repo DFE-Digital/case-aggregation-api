@@ -1,52 +1,7 @@
-DfE RSD Domain-Driven Design (DDD) Clean Architecture Template
+Case Aggregation Service - API
 ==========================================================================
 
-How to Use the DDD Clean Architecture Template
-----------------------------------------------
-
-This template provides a solid foundation for building .NET Web APIs using Domain-Driven Design (DDD) and Clean Architecture principles. Follow the steps below to create a new project based on this template.
-
-### Step 1: Clone the Repository
-
-First, clone the repository to a temporary location on your machine. This will give you access to the template files.
-
-    git clone https://github.com/DFE-Digital/rsd-ddd-clean-architecture.git
-
-### Step 2: Install the Template
-
-Navigate to the root of the cloned repository where the `.template.config` directory is located. Then, run the following command to install the template into your local .NET environment:
-
-    dotnet new -i ./
-
-This command will install the template so you can use it to generate new projects.
-
-### Step 3: Create a New Project from the Template
-
-Navigate to the directory where you want to create your new project. Once you're in the desired directory, run the following command:
-
-    dotnet new rsd-ddd-ca-webapi -n YourProjectName -o ./
-
-*   Replace `YourProjectName` with the desired name for your new project.
-*   The `-o ./` flag ensures that the new project is created in the current directory.
-
-After running this command, a new project based on the template will be generated, complete with the folder structure, configurations, and code necessary to start developing your application.
-
-### Step 4 (optional): Dockerfile
-
-If you want to use the template Dockerfile for building your .NET app then you can must update the `REPO_ORIGIN` build arguments in the file
-
-**Dockerfile** - Option 1
-
-```diff
--ARG REPO_ORIGIN="https://github.com/DFE-Digital/rsd-ddd-clean-architecture"
-+ARG REPO_ORIGIN="https://github.com/DFE-Digital/My.NewProject.Api"
-```
-
-**Dockerfile** - Option 2
-
-```shell
-docker build --build-arg REPO_ORIGIN="https://github.com/DFE-Digital/My.NewProject.Api" .
-```
+API for aggregating cases to create a unified view for Delivery officers. This is used gather cases from, but not to limited to, Prepare academy conversions, Complete academy conversions, Record concerns about schools and trusts, Manage Free School Projects
 
 User Manual
 ----------------------------------------------
