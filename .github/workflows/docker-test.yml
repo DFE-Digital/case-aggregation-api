@@ -13,12 +13,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        stage: [
-          "final",
-          "initcontainer"
-        ]
     outputs:
       image: ${{ steps.build.outputs.imageid }}
     steps:
@@ -37,5 +31,4 @@ jobs:
           build-args: CI=true
           cache-from: type=gha
           cache-to: type=gha
-          target: ${{ matrix.stage }}
           push: false

@@ -23,29 +23,6 @@ RUN dotnet restore Dfe.CaseAggregationService.sln && \
     dotnet publish ./src/Dfe.CaseAggregationService.Api --no-build -o /app
 
 # ==============================================
-# Entity Framework: Migration Builder
-# ==============================================
-FROM build AS efbuilder
-WORKDIR /build
-ARG DOTNET_EF_TAG=8.0.8
-
-ENV PATH=$PATH:/root/.dotnet/tools
-RUN dotnet tool install --global dotnet-ef
-RUN mkdir /sql
-RUN dotnet ef migrations bundle -r linux-x64 \
-      --configuration Release \
-      --project ./src/Dfe.CaseAggregationService.Api \
-      --no-build -o /sql/migratedb
-
-# ==============================================
-# Entity Framework: Migration Runner
-# ==============================================
-FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}-azurelinux3.0 AS initcontainer
-WORKDIR /sql
-COPY --from=efbuilder /sql /sql
-COPY --from=build /app/appsettings* /Dfe.CaseAggregationService.Api/
-
-# ==============================================
 # .NET Runtime: Publish
 # ==============================================
 FROM mcr.microsoft.com/dotnet/aspnet:${DOTNET_VERSION}-azurelinux3.0 AS final
