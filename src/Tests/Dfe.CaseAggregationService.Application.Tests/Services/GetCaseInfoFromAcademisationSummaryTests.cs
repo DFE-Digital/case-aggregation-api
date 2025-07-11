@@ -17,11 +17,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
                 IncomingTrustName = "Academy Name",
                 OutgoingTrustName = "Outgoing Trust Name",
                 TargetDateForTransfer = new DateTime(2010, 9, 8),
-                TypeOfTransfer = "Transfer Type"
+                TypeOfTransfer = "Transfer Type",
+                Urn = 123456,
             };
-
-
-            academySummary.Urn = 123456;
 
             var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
             getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
@@ -75,10 +73,9 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
                 LocalAuthority = "LA Name",
                 NameOfTrust = "Trust Name",
                 ConversionTransferDate = new DateTime(2010, 9, 8),
-                AcademyTypeAndRoute = "Converter"
+                AcademyTypeAndRoute = "Converter",
+                Urn = 123456,
             };
-
-            academySummary.Urn = 123456;
             
             var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
             getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);

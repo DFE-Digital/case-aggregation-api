@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             services.AddScoped<IAcademisationRepository, AcademisationApiClient>();
             services.AddScoped<IRecastRepository, RecastApiClient>();
+            services.AddScoped<IMfspRepository, MfspApiClient>();
 
             services.AddAcademiesApiClient<ITrustsV4Client, TrustsV4Client>(config);
 

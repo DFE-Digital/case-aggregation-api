@@ -3,16 +3,16 @@
 public class AcademisationSummary
 {
     public int Id { get; set; }
-    public int Urn { get; set; }
     public DateTime? CreatedOn { get; set; }
     public DateTime? LastModifiedOn { get; set; }
     public ConversionsSummary? ConversionsSummary { get; set; }
     public TransfersSummary? TransfersSummary { get; set; }
+    public FormAMatSummary? FormAMatSummary { get; set; }
 }
-
 
 public class TransfersSummary
 {
+    public int Urn { get; set; }
     public string? ProjectReference { get; set; }
     public string? OutgoingTrustUkprn { get; set; }
     public string? OutgoingTrustName { get; set; }
@@ -21,13 +21,12 @@ public class TransfersSummary
     public string? AssignedUserEmailAddress { get; set; }
     public string? AssignedUserFullName { get; set; }
     public string? Status { get; set; }
-    public string? IncomingTrustUkprn { get; set; }
-    public string? IncomingTrustName { get; set; }
+    public required string IncomingTrustName { get; set; }
 }
-
 
 public class ConversionsSummary
 {
+    public int Urn { get; set; }
     public string? ApplicationReferenceNumber { get; set; }
     public string? SchoolName { get; set; }
     public string? LocalAuthority { get; set; }
@@ -41,4 +40,12 @@ public class ConversionsSummary
     public DateTime? CreatedOn { get; set; }
     public string? Decision { get; set; }
     public DateTime? ConversionTransferDate { get; set; }
+    public string? Route { get; set; }
+}
+public class FormAMatSummary
+{
+    public required string[] SchoolNames { get; set; }
+    public DateTime? AdvisoryBoardDate { get; set; }
+    public string? ProposedTrustName { get; set; }
+    public required string[] LocalAuthority { get; set; }
 }

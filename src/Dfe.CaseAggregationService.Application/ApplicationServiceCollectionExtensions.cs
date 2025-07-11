@@ -6,6 +6,7 @@ using System.Reflection;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using Dfe.CaseAggregationService.Domain.Entities.Mfsp;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
 
 namespace Microsoft.Extensions.DependencyInjection
@@ -33,6 +34,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped<IGetCaseInfo<AcademisationSummary>, GetCaseInfoFromAcademisationSummary>();
             services.AddScoped<IGetCaseInfo<RecastSummary>, GetCaseInfoFromRecastSummary>();
+            services.AddScoped<IGetCaseInfo<MfspSummary>, GetCaseInfoFromMfspSummary>();
             
             services.AddScoped<IGetGuidanceLinks, GetGuidanceLinks>();
             services.AddScoped<IGetResourcesLinks, GetResourcesLinks>();

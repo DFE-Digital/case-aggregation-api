@@ -11,6 +11,8 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         string GetPrepareTitleLink(params string[] formatKeys);
 
         string GetRecastTitleLink(params string[] formatKeys);
+
+        string GetMfspTitleLink(params string[] formatKeys);
     }
 
     public class GetSystemLinks: IGetSystemLinks
@@ -23,6 +25,11 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         public string GetRecastTitleLink(params string[] formatKeys)
         {
             return string.Format("https://dev.record-concerns-support-trusts.education.gov.uk/case/{0}/management", formatKeys);
+        }
+
+        public string GetMfspTitleLink(params string[] formatKeys)
+        {
+            return string.Format("https://dev.manage-free-school-projects.education.gov.uk/projects/{0}/overview", formatKeys);
         }
     }
 }

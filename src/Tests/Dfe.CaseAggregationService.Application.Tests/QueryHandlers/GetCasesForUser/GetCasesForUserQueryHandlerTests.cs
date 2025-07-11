@@ -5,6 +5,7 @@ using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
@@ -13,6 +14,16 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 {
     public class GetCasesForUserQueryHandlerTests
     {
+
+        private readonly IRecastRepository? _recast;
+        private readonly IAcademisationRepository? _academisation;
+        public GetCasesForUserQueryHandlerTests()
+        {
+            _recast = Substitute.For<IRecastRepository>();
+
+            _academisation = Substitute.For<IAcademisationRepository>();
+        }
+
         [Fact]
         public async Task Handle_GetCaseForUser()
         {
@@ -22,15 +33,19 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             var userEmail = fixture.Create<string>();
             var query = new GetCasesForUserQuery(userName, userEmail, true, true, true, true, true, true, []);
 
-            var academisation = Substitute.For<IAcademisationRepository>();
+
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
 
-            academisation.GetAcademisationSummaries(userEmail, false, false, false, null).Returns([
+            var recastMap = Substitute.For<IGetCaseInfo<RecastSummary>>();
+            var mfsp = Substitute.For<IMfspRepository>();
+
+
+            _academisation.GetAcademisationSummaries(userEmail, false, false, false, null).Returns([
                 fixture.Create<AcademisationSummary>()
             ]);
 
             var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, logger);
+            var handler = new GetCasesForUserQueryHandler(_academisation, caseInfoAcademisation,  logger);
             
             // Act
             var result = await handler.Handle(query, CancellationToken.None);

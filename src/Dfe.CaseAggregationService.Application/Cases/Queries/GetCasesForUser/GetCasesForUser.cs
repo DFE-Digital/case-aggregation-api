@@ -3,6 +3,7 @@ using Dfe.CaseAggregationService.Application.Common.Models;
 using MediatR;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using Dfe.CaseAggregationService.Domain.Entities.Mfsp;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Microsoft.Extensions.Logging;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
@@ -41,6 +42,8 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         IGetCaseInfo<AcademisationSummary> academisationMap,
         IRecastRepository recastRepository,
         IGetCaseInfo<RecastSummary> recastMap,
+        IMfspRepository mfspRepository,
+        IGetCaseInfo<MfspSummary> mfspMap,
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
     {
@@ -69,13 +72,19 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                     .ContinueWith(ProcessRecast, cancellationToken));
             }
 
+            if (request.IncludeManageFreeSchools)
+            {
+                listOfTasks.Add(mfspRepository.GetMfspSummaries(request.UserEmail)
+                    .ContinueWith(ProcessMfsp, cancellationToken));
+            }
+
             try
             {
                 await Task.WhenAll(listOfTasks.ToArray());
             }
-            catch
+            catch(Exception e)
             {
-                logger.LogWarning("A call has failed when aggregating cases");
+                logger.LogWarning("A call has failed when aggregating cases: {0}", e.Message);
             }
 
             listOfTasks.ForEach(x => userCaseInfo.AddRange(x.Result));
@@ -121,6 +130,17 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             {
                 var recast = cases.Result.ToList();
                 return recast.Select(recastMap.GetCaseInfo);
+            }
+
+            return [];
+        }
+
+        private IEnumerable<UserCaseInfo> ProcessMfsp(Task<IEnumerable<MfspSummary>> cases)
+        {
+            if (!cases.IsFaulted)
+            {
+                var recast = cases.Result.ToList();
+                return recast.Select(mfspMap.GetCaseInfo);
             }
 
             return [];
