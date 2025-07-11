@@ -22,11 +22,11 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             var academySummary = new AcademisationSummary()
             {
                 Id = 1,
-                Urn = 123456,
                 CreatedOn = DateTime.Now,
                 LastModifiedOn = DateTime.Now,
                 ConversionsSummary = new ConversionsSummary()
                 {
+                    Urn = 123456,
                     ApplicationReferenceNumber = "APP123456",
                     SchoolName = "Test School",
                     LocalAuthority = "Test Local Authority",

@@ -19,11 +19,20 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
             _httpClientName = httpClientName;
         }
 
-        public async Task<T> Get<T>(string endpoint) where T : class
+        public async Task<T> Get<T>(string endpoint, IDictionary<string, string>? headers = null) where T : class
         {
             try
             {
                 var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
+
+                // Add custom headers if provided
+                if (headers != null)
+                {
+                    foreach (var header in headers)
+                    {
+                        request.Headers.Add(header.Key, header.Value);
+                    }
+                }
 
                 var client = CreateHttpClient();
 
