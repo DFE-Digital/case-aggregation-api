@@ -24,4 +24,10 @@
     <ProjectReference Include="..\Dfe.CaseAggregationService.Domain\Dfe.CaseAggregationService.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Dfe.Complete.Api.Client">
+      <HintPath>..\..\..\complete-api\src\Api\Dfe.Complete.Api.Client\bin\Debug\net8.0\Dfe.Complete.Api.Client.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
