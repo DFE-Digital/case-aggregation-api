@@ -12,7 +12,15 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
             var caseSummaryInfo = GetCaseSummaries(summary);
             var guidance = GenerateGuidanceLinkItems(summary);
             var resources = GenerateResourcesLinkItems(summary);
-            return new UserCaseInfo(GetTitle(summary), getSystemLinks.GetPrepareTitleLink(summary.Id.ToString()), System, GetProjectType(summary), summary.CreatedOn ?? DateTime.MinValue, summary.LastModifiedOn ?? DateTime.MinValue, caseSummaryInfo, guidance, resources);
+            return new UserCaseInfo(GetTitle(summary),
+                getSystemLinks.GetPrepareTitleLink(summary.Id.ToString()),
+                System,
+                GetProjectType(summary),
+                summary.CreatedOn ?? DateTime.MinValue,
+                summary.LastModifiedOn ?? DateTime.MinValue,
+                caseSummaryInfo,
+                guidance,
+                resources);
         }
 
         private static IEnumerable<CaseInfoItem> GetCaseSummaries(AcademisationSummary summary)

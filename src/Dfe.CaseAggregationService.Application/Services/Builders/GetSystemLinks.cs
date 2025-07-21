@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Dfe.CaseAggregationService.Application.Services.Builders
+﻿namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
     public interface IGetSystemLinks
     {
@@ -13,6 +7,8 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         string GetRecastTitleLink(params string[] formatKeys);
 
         string GetMfspTitleLink(params string[] formatKeys);
+
+        string GetCompleteTitleLink(params string[] formatKeys);
     }
 
     public class GetSystemLinks: IGetSystemLinks
@@ -28,6 +24,11 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         }
 
         public string GetMfspTitleLink(params string[] formatKeys)
+        {
+            return string.Format("https://dev.manage-free-school-projects.education.gov.uk/projects/{0}/overview", formatKeys);
+        }
+
+        public string GetCompleteTitleLink(params string[] formatKeys)
         {
             return string.Format("https://dev.manage-free-school-projects.education.gov.uk/projects/{0}/overview", formatKeys);
         }

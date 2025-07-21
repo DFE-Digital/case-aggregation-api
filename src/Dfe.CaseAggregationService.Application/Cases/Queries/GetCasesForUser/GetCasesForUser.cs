@@ -81,6 +81,12 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                     .ContinueWith(ProcessMfsp, cancellationToken));
             }
 
+            if (request.IncludeComplete)
+            {
+                listOfTasks.Add(completeRepository.GetCompleteSummaryForUser(request.UserEmail, cancellationToken)
+                    .ContinueWith(ProcessComplete, cancellationToken));
+            }
+
             try
             {
                 await Task.WhenAll(listOfTasks.ToArray());
@@ -144,6 +150,17 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             {
                 var recast = cases.Result.ToList();
                 return recast.Select(mfspMap.GetCaseInfo);
+            }
+
+            return [];
+        }
+
+        private IEnumerable<UserCaseInfo> ProcessComplete(Task<IEnumerable<CompleteSummary>> cases)
+        {
+            if (!cases.IsFaulted)
+            {
+                var recast = cases.Result.ToList();
+                return recast.Select(completeMap.GetCaseInfo);
             }
 
             return [];

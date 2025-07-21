@@ -26,7 +26,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 null,
                 null,
                 userEmail,
-                1,
+                0,
                 100,
                 cancellationToken);
 
@@ -40,6 +40,8 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 x.LocalAuthority ?? "",
                 x.CreatedDate,
                 x.UpdatedDate));
+            
+            return output;
         }
 
         private static string GetProjectType(ProjectType? projectType, bool? formAMat)
