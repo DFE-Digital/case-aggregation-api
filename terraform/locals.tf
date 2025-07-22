@@ -50,12 +50,12 @@ locals {
   #statuscake_contact_group_name                   = var.statuscake_contact_group_name
   #statuscake_contact_group_integrations           = var.statuscake_contact_group_integrations
   #statuscake_contact_group_email_addresses        = var.statuscake_contact_group_email_addresses
-  enable_health_insights_api                      = var.enable_health_insights_api
-  health_insights_api_cors_origins                = var.health_insights_api_cors_origins
-  health_insights_api_ipv4_allow_list             = var.health_insights_api_ipv4_allow_list
-  enable_cdn_frontdoor_vdp_redirects              = var.enable_cdn_frontdoor_vdp_redirects
-  cdn_frontdoor_vdp_destination_hostname          = var.cdn_frontdoor_vdp_destination_hostname
-  monitor_http_availability_verb                  = var.monitor_http_availability_verb
-  monitor_http_availability_fqdn                  = var.monitor_http_availability_fqdn
-  enable_monitoring_traces                        = var.enable_monitoring_traces
+  enable_health_insights_api             = var.enable_health_insights_api
+  health_insights_api_cors_origins       = var.health_insights_api_cors_origins
+  health_insights_api_ipv4_allow_list    = var.health_insights_api_ipv4_allow_list
+  enable_cdn_frontdoor_vdp_redirects     = var.enable_cdn_frontdoor_vdp_redirects
+  cdn_frontdoor_vdp_destination_hostname = var.cdn_frontdoor_vdp_destination_hostname
+  monitor_http_availability_verb         = var.monitor_http_availability_verb
+  monitor_http_availability_fqdn         = var.monitor_http_availability_fqdn
+  enable_monitoring_traces               = var.enable_monitoring_traces
 }
