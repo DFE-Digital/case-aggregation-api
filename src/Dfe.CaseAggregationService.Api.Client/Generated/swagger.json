@@ -15,7 +15,7 @@
         "operationId": "Cases_GetCasesByUser",
         "parameters": [
           {
-            "name": "userEmail",
+            "name": "UserName",
             "in": "query",
             "schema": {
               "type": "string"
@@ -23,7 +23,7 @@
             "x-position": 1
           },
           {
-            "name": "userName",
+            "name": "UserEmail",
             "in": "query",
             "schema": {
               "type": "string"
@@ -31,7 +31,7 @@
             "x-position": 2
           },
           {
-            "name": "includeSignificantChange",
+            "name": "IncludeSignificantChange",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -39,7 +39,7 @@
             "x-position": 3
           },
           {
-            "name": "includePrepare",
+            "name": "IncludePrepare",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -47,7 +47,7 @@
             "x-position": 4
           },
           {
-            "name": "includeComplete",
+            "name": "IncludeComplete",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -55,7 +55,7 @@
             "x-position": 5
           },
           {
-            "name": "includeManageFreeSchools",
+            "name": "IncludeManageFreeSchools",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -63,7 +63,7 @@
             "x-position": 6
           },
           {
-            "name": "includeConcerns",
+            "name": "IncludeConcerns",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -71,7 +71,7 @@
             "x-position": 7
           },
           {
-            "name": "includeWarningNotices",
+            "name": "IncludeWarningNotices",
             "in": "query",
             "schema": {
               "type": "boolean"
@@ -79,37 +79,43 @@
             "x-position": 8
           },
           {
-            "name": "searchTerm",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "nullable": true
-            },
-            "x-position": 9
-          },
-          {
-            "name": "filterProjectTypes",
+            "name": "FilterProjectTypes",
             "in": "query",
             "style": "form",
             "explode": true,
             "schema": {
               "type": "array",
+              "nullable": true,
               "items": {
                 "type": "string"
               }
             },
+            "x-position": 9
+          },
+          {
+            "name": "SearchTerm",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
             "x-position": 10
           },
           {
-            "name": "sortCriteria",
+            "name": "SortCriteria",
             "in": "query",
             "schema": {
-              "$ref": "#/components/schemas/SortCriteria"
+              "nullable": true,
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/SortCriteria"
+                }
+              ]
             },
             "x-position": 11
           },
           {
-            "name": "page",
+            "name": "Page",
             "in": "query",
             "schema": {
               "type": "integer",
@@ -118,7 +124,7 @@
             "x-position": 12
           },
           {
-            "name": "recordCount",
+            "name": "RecordCount",
             "in": "query",
             "schema": {
               "type": "integer",

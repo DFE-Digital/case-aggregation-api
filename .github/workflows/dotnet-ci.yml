@@ -56,4 +56,5 @@ jobs:
         dotnet-sonarscanner begin /d:sonar.qualitygate.wait=true /d:sonar.scanner.skipJreProvisioning=true /k:"DFE-Digital_case-aggregation-api" /o:"dfe-digital" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
         dotnet build Dfe.CaseAggregationService.sln --no-restore
         dotnet test Dfe.CaseAggregationService.sln --no-build --verbosity normal --collect:"XPlat Code Coverage"
+        reportgenerator -reports:"./**/coverage.cobertura.xml" -targetdir:./src/CoverageReport -reporttypes:SonarQube
         dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

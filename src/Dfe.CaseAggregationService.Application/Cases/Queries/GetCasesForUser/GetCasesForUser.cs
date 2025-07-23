@@ -32,7 +32,7 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         bool IncludeManageFreeSchools,
         bool IncludeConcerns,
         bool IncludeWarningNotices,
-        string[] FilterProjectTypes,
+        string[]? FilterProjectTypes,
         string? SearchTerm = null,
         SortCriteria? SortCriteria = SortCriteria.CreatedDateDescending,
         int Page = 1,
@@ -61,9 +61,9 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
             if (request.IncludePrepare)
             {
-                bool includeConversions = request.FilterProjectTypes.Contains("Conversion");
-                bool includeTransfers = request.FilterProjectTypes.Contains("Transfer");
-                bool includeFormAMat = request.FilterProjectTypes.Contains("Form a MAT");
+                bool includeConversions = request.FilterProjectTypes?.Contains("Conversion") ?? false ;
+                bool includeTransfers = request.FilterProjectTypes?.Contains("Transfer") ?? false; 
+                bool includeFormAMat = request.FilterProjectTypes?.Contains("Form a MAT") ?? false;
 
                 listOfTasks.Add(academisationRepository.GetAcademisationSummaries(request.UserEmail, includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
                     .ContinueWith(ProcessAcademisation, cancellationToken));

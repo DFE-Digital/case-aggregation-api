@@ -77,9 +77,9 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version)
+        public virtual System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userName, string userEmail, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, System.Collections.Generic.IEnumerable<string> filterProjectTypes, string searchTerm, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version)
         {
-            return GetCasesByUserAsync(userEmail, userName, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, searchTerm, filterProjectTypes, sortCriteria, page, recordCount, api_version, System.Threading.CancellationToken.None);
+            return GetCasesByUserAsync(userName, userEmail, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, filterProjectTypes, searchTerm, sortCriteria, page, recordCount, api_version, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
@@ -88,7 +88,7 @@ namespace Dfe.CaseAggregationService.Client
         /// </summary>
         /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userName, string userEmail, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, System.Collections.Generic.IEnumerable<string> filterProjectTypes, string searchTerm, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken)
         {
             var client_ = _httpClient;
             var disposeClient_ = false;
@@ -104,57 +104,57 @@ namespace Dfe.CaseAggregationService.Client
                     // Operation Path: "user"
                     urlBuilder_.Append("user");
                     urlBuilder_.Append('?');
-                    if (userEmail != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("userEmail")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(userEmail, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
                     if (userName != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("userName")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(userName, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("UserName")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(userName, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                    }
+                    if (userEmail != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("UserEmail")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(userEmail, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (includeSignificantChange != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includeSignificantChange")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeSignificantChange, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("IncludeSignificantChange")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeSignificantChange, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (includePrepare != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includePrepare")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includePrepare, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("IncludePrepare")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includePrepare, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (includeComplete != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includeComplete")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeComplete, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("IncludeComplete")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeComplete, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (includeManageFreeSchools != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includeManageFreeSchools")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeManageFreeSchools, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("IncludeManageFreeSchools")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeManageFreeSchools, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (includeConcerns != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includeConcerns")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeConcerns, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("IncludeConcerns")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeConcerns, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (includeWarningNotices != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("includeWarningNotices")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeWarningNotices, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
-                    }
-                    if (searchTerm != null)
-                    {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("searchTerm")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchTerm, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("IncludeWarningNotices")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(includeWarningNotices, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (filterProjectTypes != null)
                     {
-                        foreach (var item_ in filterProjectTypes) { urlBuilder_.Append(System.Uri.EscapeDataString("filterProjectTypes")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+                        foreach (var item_ in filterProjectTypes) { urlBuilder_.Append(System.Uri.EscapeDataString("FilterProjectTypes")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(item_, System.Globalization.CultureInfo.InvariantCulture))).Append('&'); }
+                    }
+                    if (searchTerm != null)
+                    {
+                        urlBuilder_.Append(System.Uri.EscapeDataString("SearchTerm")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(searchTerm, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (sortCriteria != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("sortCriteria")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(sortCriteria, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("SortCriteria")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(sortCriteria, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (page != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("page")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(page, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("Page")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(page, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (recordCount != null)
                     {
-                        urlBuilder_.Append(System.Uri.EscapeDataString("recordCount")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(recordCount, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
+                        urlBuilder_.Append(System.Uri.EscapeDataString("RecordCount")).Append('=').Append(System.Uri.EscapeDataString(ConvertToString(recordCount, System.Globalization.CultureInfo.InvariantCulture))).Append('&');
                     }
                     if (api_version != null)
                     {

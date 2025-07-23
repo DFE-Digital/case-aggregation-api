@@ -24,22 +24,10 @@ namespace Dfe.CaseAggregationService.Api.Controllers
         [SwaggerResponse(200, "Projects and Cases for the provided user.", typeof(GetCasesByUserResponseModel))]
         [SwaggerResponse(400, "User name cannot be null or empty.")]
         [SwaggerResponse(400, "User email cannot be null or empty.")]
-        public async Task<IActionResult> GetCasesByUser([FromQuery] string userEmail,
-            [FromQuery] string userName,
-            [FromQuery] bool includeSignificantChange,
-            [FromQuery] bool includePrepare,
-            [FromQuery] bool includeComplete,
-            [FromQuery] bool includeManageFreeSchools,
-            [FromQuery] bool includeConcerns,
-            [FromQuery] bool includeWarningNotices,
-            [FromQuery] string? searchTerm,
-            [FromQuery] string[] filterProjectTypes,
-            [FromQuery] SortCriteria sortCriteria,
-            [FromQuery] int page,
-            [FromQuery] int recordCount,
+        public async Task<IActionResult> GetCasesByUser([FromQuery] GetCasesForUserQuery query,
             CancellationToken cancellationToken)
         {
-            var result = await sender.Send(new GetCasesForUserQuery(userName, userEmail, includeSignificantChange, includePrepare, includeComplete, includeManageFreeSchools, includeConcerns, includeWarningNotices, filterProjectTypes, searchTerm, sortCriteria, page, recordCount), cancellationToken);
+            var result = await sender.Send(query, cancellationToken);
 
             return !result.IsSuccess ? NotFound(new CustomProblemDetails(HttpStatusCode.NotFound, result.Error)) : Ok(result.Value);
         }

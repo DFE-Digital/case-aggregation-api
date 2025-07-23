@@ -48,7 +48,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             factory.WireMockServer.AddGetWithJsonResponse($"/academisation/summary/projects", new[] { academySummary }, new List<KeyValuePair<string, string>> { new("email", "userEmail") });
 
             // Act
-            var result = await caseClient.GetCasesByUserAsync("userEmail", "userName", false, true, false, false, false, false, null, [], null, 1, 25, "1");
+            var result = await caseClient.GetCasesByUserAsync("userName", "userEmail", false, true, false, false, false, false, null, "", null, 1, 25, "1");
 
             // Assert
             Assert.NotNull(result);
