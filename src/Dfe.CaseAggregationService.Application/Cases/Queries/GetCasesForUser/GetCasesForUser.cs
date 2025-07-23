@@ -3,6 +3,7 @@ using Dfe.CaseAggregationService.Application.Common.Models;
 using MediatR;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using Dfe.CaseAggregationService.Domain.Entities.Complete;
 using Dfe.CaseAggregationService.Domain.Entities.Mfsp;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Microsoft.Extensions.Logging;
@@ -44,6 +45,8 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         IGetCaseInfo<RecastSummary> recastMap,
         IMfspRepository mfspRepository,
         IGetCaseInfo<MfspSummary> mfspMap,
+        ICompleteRepository completeRepository,
+        IGetCaseInfo<CompleteSummary> completeMap,
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
     {
@@ -76,6 +79,12 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             {
                 listOfTasks.Add(mfspRepository.GetMfspSummaries(request.UserEmail)
                     .ContinueWith(ProcessMfsp, cancellationToken));
+            }
+
+            if (request.IncludeComplete)
+            {
+                listOfTasks.Add(completeRepository.GetCompleteSummaryForUser(request.UserEmail, cancellationToken)
+                    .ContinueWith(ProcessComplete, cancellationToken));
             }
 
             try
@@ -141,6 +150,17 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             {
                 var recast = cases.Result.ToList();
                 return recast.Select(mfspMap.GetCaseInfo);
+            }
+
+            return [];
+        }
+
+        private IEnumerable<UserCaseInfo> ProcessComplete(Task<IEnumerable<CompleteSummary>> cases)
+        {
+            if (!cases.IsFaulted)
+            {
+                var recast = cases.Result.ToList();
+                return recast.Select(completeMap.GetCaseInfo);
             }
 
             return [];

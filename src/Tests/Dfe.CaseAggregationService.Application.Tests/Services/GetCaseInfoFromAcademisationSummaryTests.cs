@@ -28,7 +28,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
 
             var getSystemLinks = Substitute.For<IGetSystemLinks>();
-            getSystemLinks.GetPrepareTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
+            getSystemLinks.GetPrepareTransferTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
 
             var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
 
@@ -84,7 +84,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
 
             var getSystemLinks = Substitute.For<IGetSystemLinks>();
-            getSystemLinks.GetPrepareTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
+            getSystemLinks.GetPrepareConversionTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
 
             var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
             

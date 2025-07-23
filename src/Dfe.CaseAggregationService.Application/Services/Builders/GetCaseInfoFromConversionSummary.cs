@@ -12,7 +12,35 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
             var caseSummaryInfo = GetCaseSummaries(summary);
             var guidance = GenerateGuidanceLinkItems(summary);
             var resources = GenerateResourcesLinkItems(summary);
-            return new UserCaseInfo(GetTitle(summary), getSystemLinks.GetPrepareTitleLink(summary.Id.ToString()), System, GetProjectType(summary), summary.CreatedOn ?? DateTime.MinValue, summary.LastModifiedOn ?? DateTime.MinValue, caseSummaryInfo, guidance, resources);
+            return new UserCaseInfo(GetTitle(summary),
+                GetTitleLink(summary),
+                System,
+                GetProjectType(summary),
+                summary.CreatedOn ?? DateTime.MinValue,
+                summary.LastModifiedOn ?? DateTime.MinValue,
+                caseSummaryInfo,
+                guidance,
+                resources);
+        }
+
+        private string GetTitleLink(AcademisationSummary summary)
+        {
+            if (summary.ConversionsSummary != null)
+            {
+                return getSystemLinks.GetPrepareConversionTitleLink(summary.Id.ToString());
+            }
+
+            if (summary.TransfersSummary != null)
+            {
+                return getSystemLinks.GetPrepareTransferTitleLink(summary.Id.ToString());
+            }
+
+            if (summary.FormAMatSummary != null)
+            {
+                return getSystemLinks.GetPrepareFormAMatTitleLink(summary.Id.ToString());
+            }
+
+            return string.Empty;
         }
 
         private static IEnumerable<CaseInfoItem> GetCaseSummaries(AcademisationSummary summary)
@@ -96,7 +124,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
                 return summary.FormAMatSummary.ProposedTrustName!;
             }
 
-            return "";
+            return string.Empty;
         }
 
         private static string GetProjectType(AcademisationSummary summary)
@@ -116,7 +144,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
                 return "Form a MAT";
             }
 
-            return "";
+            return string.Empty;
         }
 
         private static IEnumerable<CaseInfoItem> GetConversionInfo(AcademisationSummary summary)

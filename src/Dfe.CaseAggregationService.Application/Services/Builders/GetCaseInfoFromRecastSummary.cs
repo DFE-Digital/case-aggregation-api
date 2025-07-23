@@ -10,8 +10,6 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         
         public UserCaseInfo GetCaseInfo(RecastSummary summary)
         {
-            GenerateGuidanceLinkItems(summary);
-            getResourcesLinks.GenerateLinkItems("Recast");
             return new UserCaseInfo(GetTitle(summary),
                 getSystemLinks.GetRecastTitleLink(summary.Id.ToString()),
                 System,

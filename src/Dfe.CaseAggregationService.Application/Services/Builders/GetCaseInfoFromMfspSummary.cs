@@ -9,8 +9,6 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         private const string System = "Manage free schools projects";
         public UserCaseInfo GetCaseInfo(MfspSummary summary)
         {
-            GenerateGuidanceLinkItems(summary);
-            getResourcesLinks.GenerateLinkItems("Recast");
             return new UserCaseInfo(GetTitle(summary),
                 getSystemLinks.GetMfspTitleLink(summary.ProjectId),
                 System,
@@ -37,8 +35,8 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
             return summary.ProjectType switch
             {
-                "Presumption" => getGuidanceLinks.GenerateLinkItems("MfspPresumption"),
-                "Central Route" => getGuidanceLinks.GenerateLinkItems("MfspCentral"),
+                "Presumption" => getResourcesLinks.GenerateLinkItems("MfspPresumption"),
+                "Central Route" => getResourcesLinks.GenerateLinkItems("MfspCentral"),
                 _ => []
             };
         }
