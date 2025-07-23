@@ -1,36 +1,61 @@
-﻿namespace Dfe.CaseAggregationService.Application.Services.Builders
+﻿using Microsoft.Extensions.Configuration;
+
+namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
     public interface IGetSystemLinks
     {
-        string GetPrepareTitleLink(params string[] formatKeys);
+        string GetPrepareConversionTitleLink(params object[] formatKeys);
 
-        string GetRecastTitleLink(params string[] formatKeys);
+        string GetPrepareTransferTitleLink(params object[] formatKeys);
 
-        string GetMfspTitleLink(params string[] formatKeys);
+        string GetRecastTitleLink(params object[] formatKeys);
 
-        string GetCompleteTitleLink(params string[] formatKeys);
+        string GetMfspTitleLink(params object[] formatKeys);
+
+        string GetCompleteTitleLink(params object[] formatKeys);
+
+        string GetPrepareFormAMatTitleLink(params object[] formatKeys);
     }
 
-    public class GetSystemLinks: IGetSystemLinks
+    public class GetSystemLinks(IConfiguration configuration): IGetSystemLinks
     {
-        public string GetPrepareTitleLink(params string[] formatKeys)
+        public string GetPrepareConversionTitleLink(params object[] formatKeys)
         {
-            return string.Format("https://dev.prepare-conversions.education.gov.uk/task-list/{0}", formatKeys) ;
+            return BuildLink("PrepareConversionLink", formatKeys);
         }
 
-        public string GetRecastTitleLink(params string[] formatKeys)
+        public string GetPrepareTransferTitleLink(params object[] formatKeys)
         {
-            return string.Format("https://dev.record-concerns-support-trusts.education.gov.uk/case/{0}/management", formatKeys);
+            return BuildLink("PrepareTransferLink", formatKeys);
         }
 
-        public string GetMfspTitleLink(params string[] formatKeys)
+        public string GetPrepareFormAMatTitleLink(params object[] formatKeys)
         {
-            return string.Format("https://dev.manage-free-school-projects.education.gov.uk/projects/{0}/overview", formatKeys);
+            return BuildLink("PrepareFormAMatLink", formatKeys);
         }
 
-        public string GetCompleteTitleLink(params string[] formatKeys)
+        public string GetRecastTitleLink(params object[] formatKeys)
         {
-            return string.Format("https://dev.manage-free-school-projects.education.gov.uk/projects/{0}/overview", formatKeys);
+            return BuildLink("RecastLink", formatKeys);
+        }
+
+        public string GetMfspTitleLink(params object[] formatKeys)
+        {
+            return BuildLink("MfspLink", formatKeys);
+        }
+
+        public string GetCompleteTitleLink(params object[] formatKeys)
+        {
+            return BuildLink("CompleteLink", formatKeys);
+        }
+
+        private string BuildLink(string linkKey, object[] formatKeys)
+        {
+            var linkBase = configuration.GetSection($"SystemLinks:{linkKey}").Get<string>();
+            if (string.IsNullOrEmpty(linkBase))
+                return string.Empty;
+
+            return string.Format(linkBase, formatKeys);
         }
     }
 }
