@@ -6,7 +6,7 @@ on:
     - release/*
     paths:
     - '**/Dfe.CaseAggregationService.Api.Client*/**'
-
+  workflow_dispatch:
 env:
   DOTNET_VERSION: '8.0.x'
 
