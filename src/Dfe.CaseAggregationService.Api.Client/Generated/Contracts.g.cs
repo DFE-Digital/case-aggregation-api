@@ -30,7 +30,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version);
+        System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userName, string userEmail, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, System.Collections.Generic.IEnumerable<string> filterProjectTypes, string searchTerm, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>
@@ -38,7 +38,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         /// </summary>
         /// <returns>Projects and Cases for the provided user.</returns>
         /// <exception cref="CaseAggregationServiceApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userEmail, string userName, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, string searchTerm, System.Collections.Generic.IEnumerable<string> filterProjectTypes, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<GetCasesByUserResponseModel> GetCasesByUserAsync(string userName, string userEmail, bool? includeSignificantChange, bool? includePrepare, bool? includeComplete, bool? includeManageFreeSchools, bool? includeConcerns, bool? includeWarningNotices, System.Collections.Generic.IEnumerable<string> filterProjectTypes, string searchTerm, SortCriteria? sortCriteria, int? page, int? recordCount, string api_version, System.Threading.CancellationToken cancellationToken);
 
     }
 
