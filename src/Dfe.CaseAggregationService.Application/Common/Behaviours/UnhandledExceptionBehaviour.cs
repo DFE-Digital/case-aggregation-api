@@ -20,7 +20,7 @@ namespace Dfe.CaseAggregationService.Application.Common.Behaviours
             {
                 var requestName = typeof(TRequest).Name;
 
-                logger.LogError(ex, "PersonsAPI Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
+                logger.LogError(ex, "CaseAggregationAPI Request: Unhandled Exception for Request {Name} {@Request}", requestName, request);
 
                 throw;
             }

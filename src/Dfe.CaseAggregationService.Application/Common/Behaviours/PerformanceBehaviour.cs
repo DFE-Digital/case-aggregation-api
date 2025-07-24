@@ -32,7 +32,7 @@ namespace Dfe.CaseAggregationService.Application.Common.Behaviours
             var requestName = typeof(TRequest).Name;
             var identityName = user?.Identity?.Name;
 
-            logger.LogWarning("PersonsAPI Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@IdentityName} {@Request}",
+            logger.LogWarning("CaseAggregationAPI Long Running Request: {Name} ({ElapsedMilliseconds} milliseconds) {@IdentityName} {@Request}",
                 requestName, elapsedMilliseconds, identityName, request);
 
             return response;

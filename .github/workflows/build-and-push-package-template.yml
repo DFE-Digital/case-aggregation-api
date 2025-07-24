@@ -5,7 +5,7 @@ on:
     branches:
     - release/*
     paths:
-    - 'Dfe.CaseAggregationService.Api.Client*/**'
+    - '**/Dfe.CaseAggregationService.Api.Client*/**'
 
 env:
   DOTNET_VERSION: '8.0.x'
@@ -83,7 +83,7 @@ jobs:
       shell: /usr/bin/bash -e {0}
 
     - name: Build, pack and publish
-      working-directory: Dfe.CaseAggregationService.Api.Client
+      working-directory: \src\Dfe.CaseAggregationService.Api.Client
       run: |
         dotnet build -c Release
         dotnet pack -c Release -p:PackageVersion=${{ env.NEW_VERSION }} --output .
