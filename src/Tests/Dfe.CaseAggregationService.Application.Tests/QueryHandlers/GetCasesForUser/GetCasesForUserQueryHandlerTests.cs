@@ -1,52 +1,35 @@
-﻿using System.Security.Cryptography.Pkcs;
-using AutoFixture;
+﻿using AutoFixture;
 using Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser;
 using Dfe.CaseAggregationService.Application.Common.Models;
-using Dfe.CaseAggregationService.Application.Services.Builders;
-using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
-using Dfe.CaseAggregationService.Domain.Entities.Academisation;
-using Dfe.CaseAggregationService.Domain.Entities.Recast;
-using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
+using Dfe.CaseAggregationService.Application.Services.SystemIntegration;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using Xunit.Sdk;
 
 namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesForUser
 {
     public class GetCasesForUserQueryHandlerTests
     {
 
-        private readonly IRecastRepository? _recast;
-        private readonly IAcademisationRepository? _academisation;
+        private readonly Fixture _fixture;
+
         public GetCasesForUserQueryHandlerTests()
         {
-            _recast = Substitute.For<IRecastRepository>();
+            _fixture = new Fixture();
 
-            _academisation = Substitute.For<IAcademisationRepository>();
         }
 
         [Fact]
         public async Task Handle_GetCaseForUser()
         {
             // Arrange
-            var fixture = new Fixture();
-            var userName = fixture.Create<string>();
-            var userEmail = fixture.Create<string>();
+            var userName = _fixture.Create<string>();
+            var userEmail = _fixture.Create<string>();
             var query = new GetCasesForUserQuery(userName, userEmail, true, false, false, false, false, false, []);
 
 
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
-
-            var recastMap = Substitute.For<IGetCaseInfo<RecastSummary>>();
-            var mfsp = Substitute.For<IMfspRepository>();
-
-
-            _academisation.GetAcademisationSummaries(userEmail, false, false, false, null).Returns([
-                fixture.Create<AcademisationSummary>()
-            ]);
-
-            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(_academisation, caseInfoAcademisation, null, null, null, null, null, null,  logger);
+            
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
             
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -80,10 +63,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
 
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
 
-            var academisation = FixtureAcademisationSummary(fixture, userEmail);
-
-            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, null, null, null, null, null, null, logger);
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -100,21 +80,6 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             Assert.Equal(3, getCasesByUserResponseModel.CaseInfos[2].CreatedDate.Day);
             Assert.Equal(2, getCasesByUserResponseModel.CaseInfos[3].CreatedDate.Day);
             Assert.Equal(1, getCasesByUserResponseModel.CaseInfos[4].CreatedDate.Day);
-        }
-
-        private static GetCaseInfoFromAcademisationSummary GetCaseInfoFromAcademisationSummary()
-        {
-            var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
-            getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
-
-            var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
-            getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
-
-            var getSystemLinks = Substitute.For<IGetSystemLinks>();
-            getSystemLinks.GetPrepareConversionTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
-
-            var mapper = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
-            return mapper;
         }
 
         [Fact]
@@ -138,12 +103,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
                 SortCriteria.CreatedDateAscending);
 
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
-
-            var academisation = FixtureAcademisationSummary(fixture, userEmail);
-
-            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, null, null, null, null, null, null, logger);
-
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
 
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
@@ -185,17 +145,10 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
                 SortCriteria.UpdatedDateDescending);
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
 
-            var academisation = FixtureAcademisationSummary(fixture, userEmail);
-
-            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, null, null, null, null, null, null, logger);
-
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
-
-            // Assert
-
-
+            
             // Assert
             Assert.NotNull(result);
 
@@ -233,11 +186,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
                 SortCriteria.UpdatedDateAscending);
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
 
-            var academisation = FixtureAcademisationSummary(fixture, userEmail);
-
-            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, null, null, null, null, null, null, logger);
-
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -278,11 +227,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
                 3);
             var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
 
-            var academisation = FixtureAcademisationSummary(fixture, userEmail);
-
-            var caseInfoAcademisation = GetCaseInfoFromAcademisationSummary();
-            var handler = new GetCasesForUserQueryHandler(academisation, caseInfoAcademisation, null, null, null, null, null, null, logger);
-
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
             // Act
             var resultPage1 = await handler.Handle(page1query, CancellationToken.None);
 
@@ -326,39 +271,53 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
         }
 
 
-        private static IAcademisationRepository FixtureAcademisationSummary(Fixture fixture, string userEmail)
+        private ISystemIntegration FixtureIntegration(string userEmail)
         {
-            var academisation = Substitute.For<IAcademisationRepository>();
+            var integration = Substitute.For<ISystemIntegration>();
 
-            var fix1 = fixture.Create<AcademisationSummary>();
-            fix1.CreatedOn = new DateTime(2001, 01, 01);
-            fix1.LastModifiedOn = new DateTime(2001, 01, 01);
+            // Create UserCaseInfo using constructor to set CreatedDate and UpdatedDate
+            var fix1 = FixtureUserCaseInfo(1);
 
-            var fix2 = fixture.Create<AcademisationSummary>();
-            fix2.CreatedOn = new DateTime(2001, 01, 02);
-            fix2.LastModifiedOn = new DateTime(2001, 01, 02);
+            var fix2 = FixtureUserCaseInfo(2);
 
-            var fix3 = fixture.Create<AcademisationSummary>();
-            fix3.CreatedOn = new DateTime(2001, 01, 03);
-            fix3.LastModifiedOn = new DateTime(2001, 01, 03);
+            var fix3 = FixtureUserCaseInfo(3);
 
-            var fix4 = fixture.Create<AcademisationSummary>();
-            fix4.CreatedOn = new DateTime(2001, 01, 04);
-            fix4.LastModifiedOn = new DateTime(2001, 01, 04);
+            var fix4 = FixtureUserCaseInfo(4);
 
-            var fix5 = fixture.Create<AcademisationSummary>();
-            fix5.CreatedOn = new DateTime(2001, 01, 05);
-            fix5.LastModifiedOn = new DateTime(2001, 01, 05);
+            var fix5 = FixtureUserCaseInfo(5);
 
-            academisation.GetAcademisationSummaries(userEmail, false, false, false, null).Returns([
+            integration.GetCasesForQuery(Arg.Is<GetCasesForUserQuery>(x => x.UserEmail == userEmail), Arg.Any<CancellationToken>()).Returns([
                 fix5,
                 fix4,
                 fix3,
                 fix2,
                 fix1
             ]);
-            return academisation;
+            return integration;
         }
 
+        private UserCaseInfo FixtureUserCaseInfo(int day)
+        {
+            return _fixture.Build<UserCaseInfo>()
+                .With(p => p.CreatedDate, new DateTime(2001, 1, day))
+                .With(p => p.UpdatedDate, new DateTime(2001, 1, day)).Create();
+        }
+        [Fact]
+        public async Task Handle_GetCaseForUser_NewTestToChange()
+        {
+            // Arrange
+            var userName = _fixture.Create<string>();
+            var userEmail = _fixture.Create<string>();
+            var query = new GetCasesForUserQuery(userName, userEmail, false, false, false, false, false, false, []);
+
+            var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+            // Assert
+            Assert.NotNull(result);
+            // TODO: Add more assertions or modify this test as needed.
+        }
     }
 }
