@@ -5,6 +5,7 @@ namespace Dfe.CaseAggregationService.Domain.Interfaces.Repositories
     public interface ICompleteRepository
     {
         Task<IEnumerable<CompleteSummary>> GetCompleteSummaryForUser(string userEmail,
+            string[]? requestFilterProjectTypes,
             CancellationToken cancellationToken);
     }
 }

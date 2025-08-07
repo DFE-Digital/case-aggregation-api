@@ -17,9 +17,10 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
         {
         }
 
-        public async Task<IEnumerable<MfspSummary>> GetMfspSummaries(string userEmail)
+        public async Task<IEnumerable<MfspSummary>> GetMfspSummaries(string userEmail,
+            string[]? requestFilterProjectTypes)
         {
-            var baseUrl = $"/api/v1/summary/project";
+            var baseUrl = "/api/v1/summary/project";
 
             var queryParams = new Dictionary<string, string?>
             {
@@ -30,7 +31,9 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var result = await Get<ApiListWrapper<GetProjectSummaryResponse>>(url);
 
-            var output = result.Data.Where(x => x.ProjectId.Any()).Select(x => new MfspSummary()
+            var output = result.Data.Where(x => x.ProjectId.Any() &&
+                                                            FilterProjectStatus(x, requestFilterProjectTypes))
+                .Select(x => new MfspSummary()
             {
                 ProjectId = x.ProjectId,
                 ProjectType = x.ProjectType,
@@ -45,8 +48,18 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 Region = x.Region,
                 ProjectManagedByEmail = x.ProjectManagedByEmail
             });
-
+            
             return output;
+        }
+
+        private static bool FilterProjectStatus(GetProjectSummaryResponse response, string[]? filters)
+        {
+            if (filters is not { Length: > 0})
+            {
+                return true;
+            }
+
+            return filters is { Length: > 0 } && filters.Contains(response.ProjectStatus);
         }
 
     }
