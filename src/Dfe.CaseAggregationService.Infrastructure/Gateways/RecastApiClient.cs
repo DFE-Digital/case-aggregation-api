@@ -19,7 +19,8 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
             _trustsClient = trustsClient;
         }
 
-        public async Task<IEnumerable<RecastSummary>> GetRecastSummaries(string userEmail)
+        public async Task<IEnumerable<RecastSummary>> GetRecastSummaries(string userEmail,
+            string[]? requestFilterProjectTypes)
         {
             var baseUrl = $"/v2/concerns-cases/summary/{userEmail}/active";
 
@@ -50,6 +51,11 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 DateCaseCreated = x.CreatedAt,
                 RiskToTrust = x.Rating.Name
             });
+
+            if (requestFilterProjectTypes is { Length: > 0 })
+            {
+                return output.Where(x => requestFilterProjectTypes.Contains(x.CaseType));
+            }
 
             return output;
         }

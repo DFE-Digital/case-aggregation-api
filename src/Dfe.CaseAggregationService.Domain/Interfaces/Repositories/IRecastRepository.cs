@@ -4,6 +4,6 @@ namespace Dfe.CaseAggregationService.Domain.Interfaces.Repositories
 {
     public interface IRecastRepository
     {
-        Task<IEnumerable<RecastSummary>> GetRecastSummaries(string userEmail);
+        Task<IEnumerable<RecastSummary>> GetRecastSummaries(string userEmail, string[]? requestFilterProjectTypes);
     }
 }
