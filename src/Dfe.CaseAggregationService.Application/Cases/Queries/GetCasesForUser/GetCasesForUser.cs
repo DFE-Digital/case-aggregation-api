@@ -131,7 +131,14 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
         private IEnumerable<UserCaseInfo> ProcessAcademisation(Task<IEnumerable<AcademisationSummary>> cases)
         {
-            if (cases.IsFaulted) return [];
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
+
+                return [];
+            }
+           
             var academisation = cases.Result.ToList();
             return academisation.Select(academisationMap.GetCaseInfo);
 
@@ -139,7 +146,14 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
         private IEnumerable<UserCaseInfo> ProcessRecast(Task<IEnumerable<RecastSummary>> cases)
         {
-            if (cases.IsFaulted) return [];
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
+
+                return [];
+            }
+
             var recast = cases.Result.ToList();
             return recast.Select(recastMap.GetCaseInfo);
 
@@ -147,7 +161,14 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
         private IEnumerable<UserCaseInfo> ProcessMfsp(Task<IEnumerable<MfspSummary>> cases)
         {
-            if (cases.IsFaulted) return [];
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
+
+                return [];
+            }
+
             var recast = cases.Result.ToList();
             return recast.Select(mfspMap.GetCaseInfo);
 
@@ -155,7 +176,14 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
         private IEnumerable<UserCaseInfo> ProcessComplete(Task<IEnumerable<CompleteSummary>> cases)
         {
-            if (cases.IsFaulted) return [];
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
+
+                return [];
+            }
+
             var recast = cases.Result.ToList();
             return recast.Select(completeMap.GetCaseInfo);
 
