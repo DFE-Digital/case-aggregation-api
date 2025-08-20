@@ -40,6 +40,9 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var result = await Get<ApiResponseV2<ActiveCaseSummaryResponse>>(url, headers);
 
+            if (!result.Data.Any())
+                return [];
+
             var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn));
 
             var output = result.Data.Where(x => x.ActiveConcerns.Any()).Select(x => new RecastSummary

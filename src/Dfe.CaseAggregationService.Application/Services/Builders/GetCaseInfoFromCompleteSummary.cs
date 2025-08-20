@@ -7,7 +7,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
     public class GetCaseInfoFromCompleteSummary(IGetGuidanceLinks getGuidanceLinks, IGetResourcesLinks getResourcesLinks, IGetSystemLinks getSystemLinks) : IGetCaseInfo<CompleteSummary>
     {
-        private const string System = "Complete";
+        private const string System = "Complete conversions, transfers and changes";
         public UserCaseInfo GetCaseInfo(CompleteSummary summary)
         {
 
