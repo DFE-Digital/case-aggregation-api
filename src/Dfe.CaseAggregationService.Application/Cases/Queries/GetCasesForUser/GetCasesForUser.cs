@@ -48,26 +48,39 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
             var listOfTasks = new List<Task<IEnumerable<UserCaseInfo>>>();
 
-           
+            if (request.IncludePrepare)
+            {
+                var includeConversions = request.FilterProjectTypes?.Contains("Conversion") ?? false ;
+                var includeTransfers = request.FilterProjectTypes?.Contains("Transfer") ?? false; 
+                var includeFormAMat = request.FilterProjectTypes?.Contains("Form a MAT") ?? false;
 
+                var filtersSet = request.FilterProjectTypes is { Length: > 0 };
 
-            //if (request.IncludeConcerns)
-            //{
-            //    listOfTasks.Add(recastRepository.GetRecastSummaries(request.UserEmail)
-            //        .ContinueWith(ProcessRecast, cancellationToken));
-            //}
+                if (!filtersSet || includeConversions || includeTransfers || includeFormAMat)
+                {
+                    listOfTasks.Add(academisationRepository.GetAcademisationSummaries(request.UserEmail,
+                            includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
+                        .ContinueWith(ProcessAcademisation, cancellationToken));
+                }
+            }
 
-            //if (request.IncludeManageFreeSchools)
-            //{
-            //    listOfTasks.Add(mfspRepository.GetMfspSummaries(request.UserEmail)
-            //        .ContinueWith(ProcessMfsp, cancellationToken));
-            //}
+            if (request.IncludeConcerns)
+            {
+                listOfTasks.Add(recastRepository.GetRecastSummaries(request.UserEmail, request.FilterProjectTypes)
+                    .ContinueWith(ProcessRecast, cancellationToken));
+            }
 
-            //if (request.IncludeComplete)
-            //{
-            //    listOfTasks.Add(completeRepository.GetCompleteSummaryForUser(request.UserEmail, cancellationToken)
-            //        .ContinueWith(ProcessComplete, cancellationToken));
-            //}
+            if (request.IncludeManageFreeSchools)
+            {
+                listOfTasks.Add(mfspRepository.GetMfspSummaries(request.UserEmail, request.FilterProjectTypes)
+                    .ContinueWith(ProcessMfsp, cancellationToken));
+            }
+
+            if (request.IncludeComplete)
+            {
+                listOfTasks.Add(completeRepository.GetCompleteSummaryForUser(request.UserEmail, request.FilterProjectTypes, cancellationToken)
+                    .ContinueWith(ProcessComplete, cancellationToken));
+            }
 
             try
             {
@@ -81,9 +94,10 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 
             listOfTasks.ForEach(x => userCaseInfo.AddRange(x.Result));
 
-            var returnModel = new GetCasesByUserResponseModel();
-
-            returnModel.TotalRecordCount = userCaseInfo.Count;
+            var returnModel = new GetCasesByUserResponseModel
+            {
+                TotalRecordCount = userCaseInfo.Count
+            };
 
             SortOutput(request, userCaseInfo);
 
@@ -105,48 +119,64 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                 userCaseInfo.Sort((x1, x2) => DateTime.Compare(x2.UpdatedDate, x1.UpdatedDate));
         }
 
-        //private IEnumerable<UserCaseInfo> ProcessAcademisation(Task<IEnumerable<AcademisationSummary>> cases)
-        //{
-        //    if (!cases.IsFaulted)
-        //    {
-        //        var academisation = cases.Result.ToList();
-        //        return academisation.Select(academisationMap.GetCaseInfo);
-        //    }
+        private IEnumerable<UserCaseInfo> ProcessAcademisation(Task<IEnumerable<AcademisationSummary>> cases)
+        {
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
 
-        //    return [];
-        //}
+                return [];
+            }
+           
+            var academisation = cases.Result.ToList();
+            return academisation.Select(academisationMap.GetCaseInfo);
 
-        //private IEnumerable<UserCaseInfo> ProcessRecast(Task<IEnumerable<RecastSummary>> cases)
-        //{
-        //    if (!cases.IsFaulted)
-        //    {
-        //        var recast = cases.Result.ToList();
-        //        return recast.Select(recastMap.GetCaseInfo);
-        //    }
+        }
 
-        //    return [];
-        //}
+        private IEnumerable<UserCaseInfo> ProcessRecast(Task<IEnumerable<RecastSummary>> cases)
+        {
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
 
-        //private IEnumerable<UserCaseInfo> ProcessMfsp(Task<IEnumerable<MfspSummary>> cases)
-        //{
-        //    if (!cases.IsFaulted)
-        //    {
-        //        var recast = cases.Result.ToList();
-        //        return recast.Select(mfspMap.GetCaseInfo);
-        //    }
+                return [];
+            }
 
-        //    return [];
-        //}
+            var recast = cases.Result.ToList();
+            return recast.Select(recastMap.GetCaseInfo);
 
-        //private IEnumerable<UserCaseInfo> ProcessComplete(Task<IEnumerable<CompleteSummary>> cases)
-        //{
-        //    if (!cases.IsFaulted)
-        //    {
-        //        var recast = cases.Result.ToList();
-        //        return recast.Select(completeMap.GetCaseInfo);
-        //    }
+        }
 
-        //    return [];
-        //}
+        private IEnumerable<UserCaseInfo> ProcessMfsp(Task<IEnumerable<MfspSummary>> cases)
+        {
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
+
+                return [];
+            }
+
+            var recast = cases.Result.ToList();
+            return recast.Select(mfspMap.GetCaseInfo);
+
+        }
+
+        private IEnumerable<UserCaseInfo> ProcessComplete(Task<IEnumerable<CompleteSummary>> cases)
+        {
+            if (cases.IsFaulted)
+            {
+                if (cases.Exception is not null)
+                    logger.LogError(cases.Exception, cases.Exception.Message);
+
+                return [];
+            }
+
+            var recast = cases.Result.ToList();
+            return recast.Select(completeMap.GetCaseInfo);
+
+        }
     }
 }

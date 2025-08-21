@@ -1,4 +1,5 @@
-﻿using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
+﻿using Dfe.CaseAggregationService.Application.Common.Extensions;
+using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Domain.Entities.Complete;
 
@@ -6,13 +7,14 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
     public class GetCaseInfoFromCompleteSummary(IGetGuidanceLinks getGuidanceLinks, IGetResourcesLinks getResourcesLinks, IGetSystemLinks getSystemLinks) : IGetCaseInfo<CompleteSummary>
     {
-        private const string System = "Complete";
+        private const string System = "Complete conversions, transfers and changes";
         public UserCaseInfo GetCaseInfo(CompleteSummary summary)
         {
+
             return new UserCaseInfo(GetTitle(summary),
                 getSystemLinks.GetCompleteTitleLink(summary.ProjectId.Value.ToString()),
                 System,
-                summary.CaseType,
+                summary.CaseType.ToDescription(),
                 summary.CreatedDate ?? DateTime.MinValue,
                 summary.UpdatedDate ?? DateTime.MinValue,
                 GetCaseInfoItems(summary),
@@ -22,18 +24,18 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
         private IEnumerable<LinkItem> GenerateGuidanceLinkItems(CompleteSummary summary)
         {
-            if (summary.CaseType.EndsWith("Transfer", StringComparison.OrdinalIgnoreCase))
+            if (summary.CaseType is CompleteProjectType.Transfer or CompleteProjectType.FormAMatTransfer)
                 return getGuidanceLinks.GenerateLinkItems("CompleteTransfer");
-            if (summary.CaseType.EndsWith("Conversion", StringComparison.OrdinalIgnoreCase))
+            if (summary.CaseType is CompleteProjectType.Conversion or CompleteProjectType.FormAMatConversion)
                 return getGuidanceLinks.GenerateLinkItems("CompleteConversion");
             return [];
         }
         private IEnumerable<LinkItem> GenerateResourceLinkItems(CompleteSummary summary)
         {
 
-            if (summary.CaseType.EndsWith("Transfer", StringComparison.OrdinalIgnoreCase))
+            if (summary.CaseType is CompleteProjectType.Transfer or CompleteProjectType.FormAMatTransfer)
                 return getResourcesLinks.GenerateLinkItems("CompleteTransfer");
-            if (summary.CaseType.EndsWith("Conversion", StringComparison.OrdinalIgnoreCase))
+            if (summary.CaseType is CompleteProjectType.Conversion or CompleteProjectType.FormAMatConversion)
                 return getResourcesLinks.GenerateLinkItems("CompleteConversion");
             return [];
         }
@@ -45,7 +47,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
         private static IEnumerable<CaseInfoItem> GetCaseInfoItems(CompleteSummary summary)
         {
-            if (summary.CaseType.EndsWith("Conversion", StringComparison.OrdinalIgnoreCase))
+            if (summary.CaseType is CompleteProjectType.Conversion or CompleteProjectType.FormAMatConversion)
             {
                 yield return new CaseInfoItem("Current confirmed conversion date",
                     summary.ProposedTransferDate.HasValue
@@ -55,9 +57,8 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
                 yield return new CaseInfoItem("LA", summary.LocalAuthority, null);
             }
 
-            if (summary.CaseType.EndsWith("Transfer", StringComparison.OrdinalIgnoreCase))
+            if (summary.CaseType is CompleteProjectType.Transfer or CompleteProjectType.FormAMatTransfer)
             {
-
                 yield return new CaseInfoItem("Current confirmed transfer date",
                     summary.ProposedTransferDate.HasValue
                         ? summary.ProposedTransferDate.Value.ToString("dd/MM/yyyy")

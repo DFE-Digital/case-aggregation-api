@@ -4,6 +4,6 @@ namespace Dfe.CaseAggregationService.Domain.Interfaces.Repositories
 {
     public interface IMfspRepository
     {
-        Task<IEnumerable<MfspSummary>> GetMfspSummaries(string userEmail);
+        Task<IEnumerable<MfspSummary>> GetMfspSummaries(string userEmail, string[]? requestFilterProjectTypes);
     }
 }
