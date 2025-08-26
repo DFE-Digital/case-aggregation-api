@@ -39,6 +39,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IGetCaseInfo<MfspSummary>, GetCaseInfoFromMfspSummary>();
             services.AddScoped<IGetCaseInfo<CompleteSummary>, GetCaseInfoFromCompleteSummary>();
             services.AddScoped<ISystemIntegration, AcademisationIntegration>();
+            services.AddScoped<ISystemIntegration, MfspIntegration>();
+            services.AddScoped<ISystemIntegration, CompleteIntegration>();
+            services.AddScoped<ISystemIntegration, RecastIntegration>();
 
             services.AddScoped<IGetGuidanceLinks, GetGuidanceLinks>();
             services.AddScoped<IGetResourcesLinks, GetResourcesLinks>();
