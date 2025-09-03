@@ -35,7 +35,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
                     NameOfTrust = "Test Trust",
                     AssignedUserEmailAddress = "user@test.com",
                     AssignedUserFullName = "Test User",
-                    ProjectStatus = "Open",
+                    ProjectStatus = "Deferred",
                     TrustReferenceNumber = "TR123456",
                     CreatedOn = DateTime.UtcNow,
                     Decision = "Approved",
@@ -52,7 +52,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(result.TotalRecordCount, 1);
+            Assert.Equal(1, result.TotalRecordCount);
             Assert.Equal(result.CaseInfos.First().Title , academySummary.ConversionsSummary.SchoolName);
         }
     }
