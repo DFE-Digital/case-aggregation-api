@@ -1,7 +1,6 @@
 ﻿using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using NSubstitute;
-using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Domain.Entities.Complete;
 
 namespace Dfe.CaseAggregationService.Application.Tests.Services
@@ -99,23 +98,6 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             info[0].ShouldBe("Current confirmed conversion date", "08/09/2010");
             info[1].ShouldBe("Name", "Incoming Trust name");
             info[2].ShouldBe("LA", "Local Authority");
-        }
-    }
-
-    public static class CaseInfoItemTestExtensions
-    {
-        public static void ShouldBe(this CaseInfoItem item, string expectedLabel, string expectedValue)
-        {
-            Assert.Equal(expectedLabel, item.Label);
-            Assert.Equal(expectedValue, item.Value);
-            Assert.Null(item.Link);
-        }
-
-        public static void ShouldBe(this CaseInfoItem item, string expectedLabel, string expectedValue, string expectedLink)
-        {
-            Assert.Equal(expectedLabel, item.Label);
-            Assert.Equal(expectedValue, item.Value);
-            Assert.Equal(expectedLink, item.Link);
         }
     }
 }
