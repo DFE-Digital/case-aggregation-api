@@ -65,7 +65,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
         
         private string GetCaseType(ActiveCaseSummaryResponse summary)
         {
-            return summary.ActiveConcerns.FirstOrDefault()?.Name ?? "";
+            return summary.ActiveConcerns.FirstOrDefault()?.Name ?? "Monitoring";
         }
 
     }
