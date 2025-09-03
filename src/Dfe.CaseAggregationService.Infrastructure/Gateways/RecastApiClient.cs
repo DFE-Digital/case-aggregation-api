@@ -45,7 +45,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn));
 
-            var output = result.Data.Where(x => x.ActiveConcerns.Any()).Select(x => new RecastSummary
+            var output = result.Data.Select(x => new RecastSummary
             {
                 Id = x.CaseUrn,
                 CaseType = GetCaseType(x),
