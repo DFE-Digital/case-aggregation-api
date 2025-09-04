@@ -1,6 +1,7 @@
 ﻿using Dfe.AcademiesApi.Client.Contracts;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
+using Dfe.CaseAggregationService.Infrastructure.Dto.Recast;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -65,7 +66,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
         
         private string GetCaseType(ActiveCaseSummaryResponse summary)
         {
-            return summary.ActiveConcerns.FirstOrDefault()?.Name ?? "Monitoring";
+            return summary.ActiveConcerns?.FirstOrDefault()?.Name ?? "Monitoring";
         }
 
     }

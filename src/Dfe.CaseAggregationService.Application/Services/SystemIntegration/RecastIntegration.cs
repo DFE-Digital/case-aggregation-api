@@ -16,7 +16,7 @@ namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
         public Task<IEnumerable<UserCaseInfo>> GetCasesForQuery(GetCasesForUserQuery query, CancellationToken cancellationToken)
         {
 
-            if (query.IncludeManageFreeSchools)
+            if (query.IncludeConcerns)
             {
                 return repo.GetRecastSummaries(query.UserEmail, query.FilterProjectTypes)
                     .ContinueWith(ProcessResult, cancellationToken);

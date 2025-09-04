@@ -210,7 +210,7 @@ namespace Dfe.CaseAggregationService.Api
 
     public class ApiUsingKeyOptions
     {
-        public string ApiKey { get; set; }
-        public string BaseUrl { get; set; }
+        public string? ApiKey { get; set; }
+        public string? BaseUrl { get; set; }
     }
 }

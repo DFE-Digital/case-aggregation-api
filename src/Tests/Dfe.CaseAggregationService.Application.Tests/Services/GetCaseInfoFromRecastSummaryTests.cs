@@ -3,7 +3,6 @@ using Dfe.CaseAggregationService.Application.Services.Builders;
 using NSubstitute;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
-using FluentAssertions;
 
 namespace Dfe.CaseAggregationService.Application.Tests.Services
 {
@@ -44,10 +43,10 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             Assert.Equal(new DateTime(2025, 02, 11), result.CreatedDate);
             Assert.Equal(new DateTime(2025, 02, 11), result.UpdatedDate);
             Assert.Equal(5, result.Info.Count());
-            Assert.Equal(result.Guidance.FirstOrDefault().Title, "Guidance Pres");
-            Assert.Equal(result.Guidance.FirstOrDefault().Link, "http://guide.pres.link");
-            Assert.Equal(result.Resources.FirstOrDefault().Title, "Resource Pres");
-            Assert.Equal(result.Resources.FirstOrDefault().Link, "http://res.pres.link");
+            Assert.Equal("Guidance Pres", result.Guidance.FirstOrDefault()?.Title);
+            Assert.Equal("http://guide.pres.link", result.Guidance.FirstOrDefault()?.Link);
+            Assert.Equal("Resource Pres", result.Resources.FirstOrDefault()?.Title);
+            Assert.Equal("http://res.pres.link", result.Resources.FirstOrDefault()?.Link);
             var info = result.Info.ToArray();
 
             info[0].ShouldBe("Concerns", "None");

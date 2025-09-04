@@ -234,12 +234,14 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             Assert.NotNull(resultPage1);
             var resultPage1List = resultPage1.Value!;
 
-            Assert.Equal(5, resultPage1List.TotalRecordCount);
-            Assert.Equal(3, resultPage1List.CaseInfos.Count);
+            Assert.NotNull(resultPage1List);
 
-            Assert.Equal(1, resultPage1List.CaseInfos[0].UpdatedDate.Day);
-            Assert.Equal(2, resultPage1List.CaseInfos[1].UpdatedDate.Day);
-            Assert.Equal(3, resultPage1List.CaseInfos[2].UpdatedDate.Day);
+            Assert.Equal(5, resultPage1List.TotalRecordCount);
+            Assert.Equal(3, resultPage1List.CaseInfos?.Count);
+
+            Assert.Equal(1, resultPage1List.CaseInfos?[0].UpdatedDate.Day);
+            Assert.Equal(2, resultPage1List.CaseInfos?[1].UpdatedDate.Day);
+            Assert.Equal(3, resultPage1List.CaseInfos?[2].UpdatedDate.Day);
 
             var page2query = new GetCasesForUserQuery(userName,
                 userEmail,

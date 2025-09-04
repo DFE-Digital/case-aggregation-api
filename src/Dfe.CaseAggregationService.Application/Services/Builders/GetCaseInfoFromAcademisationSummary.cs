@@ -149,6 +149,9 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
         private static IEnumerable<CaseInfoItem> GetConversionInfo(AcademisationSummary summary)
         {
+            if (summary.ConversionsSummary == null)
+                throw new ArgumentNullException();
+
             yield return new CaseInfoItem("URN", summary.ConversionsSummary.Urn.ToString(), null);
             if(summary.ConversionsSummary.ConversionTransferDate != null)
                 yield return new CaseInfoItem("Advisory board date", summary.ConversionsSummary.ConversionTransferDate.Value.ToString("dd/MM/yyyy"), null);
@@ -159,6 +162,9 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
         private static IEnumerable<CaseInfoItem> GetTransferInfo(AcademisationSummary summary)
         {
+            if (summary.TransfersSummary == null)
+                throw new ArgumentNullException();
+
             yield return new CaseInfoItem("URN", summary.TransfersSummary.Urn.ToString(), null);
             if(summary.TransfersSummary.TargetDateForTransfer != null)
                 yield return new CaseInfoItem("Proposed transfer date", summary.TransfersSummary.TargetDateForTransfer.Value.ToString("dd/MM/yyyy"), null);
@@ -170,6 +176,9 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
         private static IEnumerable<CaseInfoItem> GetFormAMatInfo(AcademisationSummary summary)
         {
+            if (summary.FormAMatSummary == null)
+                throw new ArgumentNullException();
+
             yield return new CaseInfoItem("School names", summary.FormAMatSummary.SchoolNames.Aggregate((acc, next) => acc + ", " + next), null);
             if (summary.FormAMatSummary.AdvisoryBoardDate != null)
                 yield return new CaseInfoItem("Advisory board date", summary.FormAMatSummary.AdvisoryBoardDate.Value.ToString("dd/MM/yyyy"), null);

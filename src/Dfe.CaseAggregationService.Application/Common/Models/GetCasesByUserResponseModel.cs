@@ -10,6 +10,6 @@ namespace Dfe.CaseAggregationService.Application.Common.Models
     {
         public int TotalRecordCount { get; set; }
 
-        public List<UserCaseInfo> CaseInfos { get; set; }
+        public List<UserCaseInfo>? CaseInfos { get; set; }
     }
 }
