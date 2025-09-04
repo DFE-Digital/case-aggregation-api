@@ -23,7 +23,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
         public async Task<IEnumerable<RecastSummary>> GetRecastSummaries(string userEmail,
             string[]? requestFilterProjectTypes)
         {
-            var baseUrl = $"/v2/concerns-cases/summary/{userEmail}/active";
+            var baseUrl = $"v2/concerns-cases/summary/{userEmail}/active";
 
             var queryParams = new Dictionary<string, string?>
             {
@@ -44,8 +44,12 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
             if (!result.Data.Any())
                 return [];
 
-            var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn));
+            try
+            {
+       var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn));
 
+          
+     
             var output = result.Data.Select(x => new RecastSummary
             {
                 Id = x.CaseUrn,
@@ -62,8 +66,16 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
             }
 
             return output;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
         }
-        
+
         private string GetCaseType(ActiveCaseSummaryResponse summary)
         {
             return summary.ActiveConcerns?.FirstOrDefault()?.Name ?? "Monitoring";

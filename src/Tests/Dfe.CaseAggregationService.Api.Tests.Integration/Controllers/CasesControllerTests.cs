@@ -5,7 +5,11 @@ using DfE.CoreLibs.Testing.AutoFixture.Attributes;
 using DfE.CoreLibs.Testing.Mocks.WebApplicationFactory;
 using DfE.CoreLibs.Testing.Mocks.WireMock;
 using System.Security.Claims;
+using AutoFixture;
 using Dfe.CaseAggregationService.Infrastructure.Dto.Mfsp;
+using Dfe.CaseAggregationService.Infrastructure.Dto.Recast;
+using Dfe.AcademiesApi.Client.Contracts;
+using System.Collections.ObjectModel;
 
 namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
 {
@@ -15,14 +19,15 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
         [CustomAutoData(typeof(CustomWebApplicationDbContextFactoryCustomization))]
         public async Task GetCasesAsync_ShouldCases_WhenCaseExists(
             CustomWebApplicationDbContextFactory<Program> factory,
-            ICasesClient caseClient)
+            ICasesClient caseClient,
+            IFixture fixture)
         {
             factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
 
             var academySummary = new AcademisationSummary()
             {
                 Id = 1,
-                CreatedOn = DateTime.UtcNow.AddMonths(2),
+                CreatedOn = DateTime.UtcNow.AddMonths(3),
                 LastModifiedOn = DateTime.UtcNow.AddMonths(2),
                 ConversionsSummary = new ConversionsSummary()
                 {
@@ -39,7 +44,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
                     TrustReferenceNumber = "TR123456",
                     CreatedOn = DateTime.UtcNow,
                     Decision = "Approved",
-                    ConversionTransferDate = DateTime.UtcNow.AddMonths(2)
+                    ConversionTransferDate = DateTime.UtcNow.AddMonths(3)
                 }
             };
 
@@ -56,7 +61,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
                 ProjectType = "Presumption",
                 ProjectManagedByEmail = "userEmail",
                 SchoolType = "A type",
-                UpdatedAt = DateTime.UtcNow.AddMonths(1)
+                UpdatedAt = DateTime.UtcNow.AddMonths(2)
             };
 
             var mfspResponse = new ApiListWrapper<GetProjectSummaryResponse>()
@@ -66,19 +71,49 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             };
 
             Assert.NotNull(factory.WireMockServer);
+
+
+            var recastResponse = new ApiResponseV2<ActiveCaseSummaryResponse>()
+            {
+                Data = new []{ fixture.Create<ActiveCaseSummaryResponse>()},
+                Paging = null
+            };
+
+            var ukprn = "1234567";
+
+            recastResponse.Data.First().CreatedAt = DateTime.UtcNow.AddMonths(1);
+            recastResponse.Data.First().TrustUkPrn = ukprn;
+
+            var trust = fixture.Create<TrustDto>();
             
+            trust.Ukprn = recastResponse.Data.First().TrustUkPrn;
+
+            var trustResponse = new ObservableCollection<TrustDto>
+            {
+                trust
+            };
+
             factory.WireMockServer.AddGetWithJsonResponse($"/academisation/summary/projects", new[] { academySummary }, new List<KeyValuePair<string, string>> { new("email", "userEmail") });
 
             factory.WireMockServer.AddGetWithJsonResponse($"/mfsp/api/v1/summary/project", mfspResponse, new List<KeyValuePair<string, string>> { new("projectManagedByEmail", "userEmail") });
 
+            factory.WireMockServer.AddGetWithJsonResponse($"/recast/v2/concerns-cases/summary/userEmail/active", recastResponse, new List<KeyValuePair<string, string>> 
+            {
+                new(  "page", "1"),
+                new("count", "100")
+            });
+
+            factory.WireMockServer.AddGetWithJsonResponse($"/academies/v4/trusts/bulk", trustResponse, new List<KeyValuePair<string, string>> { new("ukprns", $"{ recastResponse.Data.First().TrustUkPrn}") });
+
             // Act
-            var result = await caseClient.GetCasesByUserAsync("userName", "userEmail", false, true, false, true, false, false, null, "", null, 1, 25, "1");
+            var result = await caseClient.GetCasesByUserAsync("userName", "userEmail", false, true, false, true, true, false, null, "", null, 1, 25, "1");
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(2, result.TotalRecordCount);
+            Assert.Equal(3, result.TotalRecordCount);
             Assert.Equal(academySummary.ConversionsSummary.SchoolName, result.CaseInfos.First().Title);
             Assert.Equal(mfspSummary.ProjectTitle, result.CaseInfos[1].Title);
+            Assert.Equal(trust.Name, result.CaseInfos[2].Title);
         }
     }
 }
