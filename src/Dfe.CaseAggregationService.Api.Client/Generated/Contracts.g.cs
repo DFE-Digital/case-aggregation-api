@@ -48,7 +48,7 @@ namespace Dfe.CaseAggregationService.Client.Contracts
         [Newtonsoft.Json.JsonProperty("totalRecordCount", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public int TotalRecordCount { get; set; }
 
-        [Newtonsoft.Json.JsonProperty("caseInfos", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonProperty("caseInfos", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.List<UserCaseInfo> CaseInfos { get; set; }
 
         public string ToJson()

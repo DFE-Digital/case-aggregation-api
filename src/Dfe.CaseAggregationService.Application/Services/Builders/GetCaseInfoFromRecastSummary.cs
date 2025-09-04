@@ -15,7 +15,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
                 System,
                 summary.CaseType,
                 summary.DateCaseCreated,
-                DateTime.Now,
+                summary.DateCaseCreated,
                 GetCaseInfoItems(summary),
                 GenerateGuidanceLinkItems(summary),
                 GenerateResourceLinkItems(summary));

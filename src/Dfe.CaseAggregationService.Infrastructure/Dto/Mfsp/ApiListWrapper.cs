@@ -1,21 +1,25 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+using Newtonsoft.Json;
 
-namespace Dfe.CaseAggregationService.Infrastructure.Gateways
+namespace Dfe.CaseAggregationService.Infrastructure.Dto.Mfsp
 {
+	[ExcludeFromCodeCoverage]
 	public sealed class ApiListWrapper<T>
 	{
 		[JsonProperty("data")] 
-		public IList<T> Data { get; set; }
+		public IList<T>? Data { get; set; }
 		
 		[JsonProperty("paging")]
-		public Pagination Paging { get; set; }
+		public Pagination? Paging { get; set; }
 
 		public ApiListWrapper() { }
 
 		[JsonConstructor]
 		public ApiListWrapper(IList<T> data, Pagination paging) => (Data, Paging) = (data, paging);
 	}
-	public class Pagination
+
+    [ExcludeFromCodeCoverage]
+    public class Pagination
 	{
 		[JsonProperty("page")]
 		public int Page { get; set; }
