@@ -1,7 +1,7 @@
 using System.Collections.Specialized;
 using AutoFixture;
-using DfE.CoreLibs.Testing.Mocks.Authentication;
-using DfE.CoreLibs.Testing.Mocks.WebApplicationFactory;
+using GovUK.Dfe.CoreLibs.Testing.Mocks.Authentication;
+using GovUK.Dfe.CoreLibs.Testing.Mocks.WebApplicationFactory;
 using Dfe.CaseAggregationService.Api;
 using Dfe.CaseAggregationService.Api.Client.Extensions;
 using Dfe.CaseAggregationService.Client;

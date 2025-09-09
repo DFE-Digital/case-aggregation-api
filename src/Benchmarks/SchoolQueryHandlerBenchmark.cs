@@ -21,10 +21,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Data.Common;
 using Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser;
-using DfE.CoreLibs.Caching.Helpers;
-using DfE.CoreLibs.Caching.Interfaces;
-using DfE.CoreLibs.Caching.Services;
-using DfE.CoreLibs.Caching.Settings;
+using GovUK.Dfe.CoreLibs.Caching.Helpers;
+using GovUK.Dfe.CoreLibs.Caching.Interfaces;
+using GovUK.Dfe.CoreLibs.Caching.Services;
+using GovUK.Dfe.CoreLibs.Caching.Settings;
 
 namespace Dfe.CaseAggregationService.Benchmarks
 {

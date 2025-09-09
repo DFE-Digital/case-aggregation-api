@@ -41,36 +41,33 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var result = await Get<ApiResponseV2<ActiveCaseSummaryResponse>>(url, headers);
 
-            if (!result.Data.Any())
+            if (result.Data == null || !result.Data.Any())
                 return [];
 
             try
             {
-       var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn));
+                var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn ?? ""));
 
-          
-     
-            var output = result.Data.Select(x => new RecastSummary
-            {
-                Id = x.CaseUrn,
-                CaseType = GetCaseType(x),
-                TrustName = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.Name ?? "",
-                Trn = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.ReferenceNumber ?? "",
-                DateCaseCreated = x.CreatedAt,
-                RiskToTrust = x.Rating.Name
-            });
+                var output = result.Data.Select(x => new RecastSummary
+                {
+                    Id = x.CaseUrn,
+                    CaseType = GetCaseType(x),
+                    TrustName = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.Name ?? "",
+                    Trn = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.ReferenceNumber ?? "",
+                    DateCaseCreated = x.CreatedAt,
+                    RiskToTrust = x.Rating.Name
+                });
 
-            if (requestFilterProjectTypes is { Length: > 0 })
-            {
-                return output.Where(x => requestFilterProjectTypes.Contains(x.CaseType));
+                if (requestFilterProjectTypes is { Length: > 0 })
+                {
+                    return output.Where(x => requestFilterProjectTypes.Contains(x.CaseType));
+                }
+
+                return output;
             }
-
-            return output;
-
-            }
-            catch (Exception e)
+            catch(Exception ex)
             {
-                Console.WriteLine(e);
+                Console.WriteLine(ex);
                 throw;
             }
 
