@@ -6,7 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Dfe.AcademiesApi.Client" Version="1.0.10" />
     <PackageReference Include="Dfe.Complete.Api.Client" Version="1.0.6" />
-    <PackageReference Include="DfE.CoreLibs.Security" Version="1.0.0" />
+    <PackageReference Include="GovUK.Dfe.CoreLibs.Security" Version="1.1.17" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.18" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.18" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.18">

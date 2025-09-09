@@ -1,6 +1,7 @@
 ﻿using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Academisation;
+using FluentAssertions;
 using NSubstitute;
 
 namespace Dfe.CaseAggregationService.Application.Tests.Services
@@ -115,6 +116,50 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             Assert.Equal("Route", info[4].Label);
             Assert.Equal("Voluntary conversion", info[4].Value);
             Assert.Null(info[4].Link);
+
+        }
+
+
+        [Fact]
+        public void GivenFormAMatReturnCaseInfo()
+        {
+            var academySummary = new AcademisationSummary();
+
+            academySummary.FormAMatSummary = new FormAMatSummary()
+            {
+                SchoolNames = ["School1", "School2"],
+                AdvisoryBoardDate = new DateTime(2010, 9, 8),
+                ProposedTrustName = "Trust Name",
+                LocalAuthority = ["LA1", "LA2"]
+            };
+
+            var getGuidanceLinks = Substitute.For<IGetGuidanceLinks>();
+            getGuidanceLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+
+            var getResourcesLinks = Substitute.For<IGetResourcesLinks>();
+            getResourcesLinks.GenerateLinkItems(Arg.Any<string>()).Returns([]);
+
+            var getSystemLinks = Substitute.For<IGetSystemLinks>();
+            getSystemLinks.GetPrepareFormAMatTitleLink(Arg.Any<string>()).Returns("http://TitleLink");
+
+            var underTest = new GetCaseInfoFromAcademisationSummary(getGuidanceLinks, getResourcesLinks, getSystemLinks);
+
+            var caseInfo = underTest.GetCaseInfo(academySummary);
+
+            Assert.NotNull(caseInfo);
+
+            Assert.Equal("Form a MAT", caseInfo.ProjectType);
+            Assert.Equal("Prepare conversions and transfers", caseInfo.System);
+            Assert.Equal("http://TitleLink", caseInfo.TitleLink);
+            Assert.Equal("Trust Name", caseInfo.Title);
+
+            Assert.Equal(3, caseInfo.Info.Count());
+            var info = caseInfo.Info.ToArray();
+
+            info[0].ShouldBe("School names", "School1, School2");
+            info[1].ShouldBe("Advisory board date", "08/09/2010");
+            info[2].ShouldBe("Local authority(s) involved", "LA1, LA2");
+
 
         }
     }

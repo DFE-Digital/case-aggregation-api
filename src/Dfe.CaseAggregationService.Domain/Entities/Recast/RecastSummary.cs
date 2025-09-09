@@ -9,7 +9,6 @@ namespace Dfe.CaseAggregationService.Domain.Entities.Recast
     public class RecastSummary
     {
         public long Id { get; set; }
-        public string System { get; set; } = string.Empty;
         public string CaseType { get; set; } = string.Empty;
         public string TrustName { get; set; } = string.Empty;
         public string Trn { get; set; } = string.Empty;

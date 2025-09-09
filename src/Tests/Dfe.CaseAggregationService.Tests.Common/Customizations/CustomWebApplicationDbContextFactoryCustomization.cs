@@ -1,12 +1,12 @@
+using System.Collections.Specialized;
 using AutoFixture;
-using DfE.CoreLibs.Testing.Mocks.Authentication;
-using DfE.CoreLibs.Testing.Mocks.WebApplicationFactory;
+using GovUK.Dfe.CoreLibs.Testing.Mocks.Authentication;
+using GovUK.Dfe.CoreLibs.Testing.Mocks.WebApplicationFactory;
 using Dfe.CaseAggregationService.Api;
 using Dfe.CaseAggregationService.Api.Client.Extensions;
 using Dfe.CaseAggregationService.Client;
 using Dfe.CaseAggregationService.Client.Contracts;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Net.Http.Headers;
@@ -15,11 +15,9 @@ using Dfe.AcademiesApi.Client;
 using Dfe.AcademiesApi.Client.Contracts;
 using Dfe.AcademiesApi.Client.Security;
 using Dfe.AcademiesApi.Client.Settings;
-using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
-using Dfe.CaseAggregationService.Infrastructure.Gateways;
-using Dfe.Complete.Api.Client.Settings;
 using Dfe.Complete.Client;
 using Dfe.Complete.Client.Contracts;
+using NSubstitute;
 
 namespace Dfe.CaseAggregationService.Tests.Common.Customizations
 {
@@ -57,10 +55,21 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
                             ["AcademisationApiClient:BaseUrl"] = mockServer.Urls[0].TrimEnd('/') + "/academisation/",
                             ["AcademiesApiClient:BaseUrl"] = mockServer.Urls[0].TrimEnd('/') + "/academies/",
                             ["CompleteApiClient:BaseUrl"] = mockServer.Urls[0].TrimEnd('/') + "/complete/",
+                            ["MfspApiClient:BaseUrl"] = mockServer.Urls[0].TrimEnd('/') + "/mfsp/",
+                            ["RecastApiClient:BaseUrl"] = mockServer.Urls[0].TrimEnd('/') + "/recast/",
                         });
+
+                        mockServer.LogEntriesChanged += LogEntriesChanged;
                     },
                     ExternalWireMockClientRegistration = (services, config, wireHttp) =>
                     {
+
+                        services.AddHttpClient("MfspApiClient", (serviceProvider, httpClient) =>
+                        {
+                            var wConfig = serviceProvider.GetRequiredService<IConfiguration>();
+
+                            httpClient.BaseAddress = new Uri(wConfig["MfspApiClient:BaseUrl"]!);
+                        });
 
                         services.AddHttpClient("AcademisationApiClient", (serviceProvider, httpClient) =>
                         {
@@ -85,15 +94,22 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
                                     return new ApiKeyHandler(apiSettings);
                                 });
 
-                        services.AddHttpClient<IProjectsClient, ProjectsClient>((httpClient, serviceProvider) =>
+                        services.AddHttpClient("RecastApiClient", (serviceProvider, httpClient) =>
                         {
                             var wConfig = serviceProvider.GetRequiredService<IConfiguration>();
 
-                            httpClient.BaseAddress = new Uri(wConfig["CompleteApiClient:BaseUrl"]!);
-
-                            return ActivatorUtilities.CreateInstance<ProjectsClient>(
-                                serviceProvider, httpClient, wConfig["CompleteApiClient:BaseUrl"]!);
+                            httpClient.BaseAddress = new Uri(wConfig["RecastApiClient:BaseUrl"]!);
                         });
+
+                        //services.AddHttpClient<IProjectsClient, ProjectsClient>((httpClient, serviceProvider) =>
+                        //{
+                        //    var wConfig = serviceProvider.GetRequiredService<IConfiguration>();
+
+                        //    httpClient.BaseAddress = new Uri(wConfig["CompleteApiClient:BaseUrl"]!);
+
+                        //    return ActivatorUtilities.CreateInstance<ProjectsClient>(
+                        //        serviceProvider, httpClient, wConfig["CompleteApiClient:BaseUrl"]!);
+                        //});
                     }
 
                 };
@@ -120,6 +136,13 @@ namespace Dfe.CaseAggregationService.Tests.Common.Customizations
 
                 return factory;
             }));
+
+        }
+
+        static void LogEntriesChanged(object? sender,
+            NotifyCollectionChangedEventArgs e)
+        {
+            Console.WriteLine(e.NewItems);
         }
     }
 }

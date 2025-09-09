@@ -1,7 +1,7 @@
 ﻿
 using Dfe.CaseAggregationService.Domain.Entities.Mfsp;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
-using Dfe.CaseAggregationService.Infrastructure.Dto;
+using Dfe.CaseAggregationService.Infrastructure.Dto.Mfsp;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System;
@@ -20,7 +20,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
         public async Task<IEnumerable<MfspSummary>> GetMfspSummaries(string userEmail,
             string[]? requestFilterProjectTypes)
         {
-            var baseUrl = "/api/v1/summary/project";
+            var baseUrl = "api/v1/summary/project";
 
             var queryParams = new Dictionary<string, string?>
             {

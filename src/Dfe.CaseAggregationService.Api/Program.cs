@@ -13,8 +13,8 @@ using System.Text;
 using System.Text.Json.Serialization;
 using Asp.Versioning;
 using Asp.Versioning.ApiExplorer;
-using DfE.CoreLibs.Http.Middlewares.CorrelationId;
-using DfE.CoreLibs.Http.Interfaces;
+using GovUK.Dfe.CoreLibs.Http.Interfaces;
+using GovUK.Dfe.CoreLibs.Http.Middlewares.CorrelationId;
 
 namespace Dfe.CaseAggregationService.Api
 {
@@ -210,7 +210,7 @@ namespace Dfe.CaseAggregationService.Api
 
     public class ApiUsingKeyOptions
     {
-        public string ApiKey { get; set; }
-        public string BaseUrl { get; set; }
+        public string? ApiKey { get; set; }
+        public string? BaseUrl { get; set; }
     }
 }

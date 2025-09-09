@@ -172,6 +172,7 @@
           },
           "caseInfos": {
             "type": "array",
+            "nullable": true,
             "items": {
               "$ref": "#/components/schemas/UserCaseInfo"
             }

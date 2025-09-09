@@ -5,8 +5,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
-    <PackageReference Include="DfE.CoreLibs.AsyncProcessing" Version="1.0.7" />
-    <PackageReference Include="DfE.CoreLibs.Caching" Version="1.0.9" />
+    <PackageReference Include="GovUK.Dfe.CoreLibs.AsyncProcessing" Version="1.0.12" />
+    <PackageReference Include="GovUK.Dfe.CoreLibs.Caching" Version="1.0.10" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.18" />
@@ -21,11 +21,6 @@
 
   <ItemGroup>
     <Folder Include="MappingProfiles\" />
-    <Folder Include="Schools\Commands\" />
-    <Folder Include="Schools\EventHandlers\" />
-    <Folder Include="Schools\Models\" />
-    <Folder Include="Schools\Queries\GetPrincipalBySchool\" />
-    <Folder Include="Schools\Queries\GetPrincipalsBySchools\" />
   </ItemGroup>
 
 </Project>

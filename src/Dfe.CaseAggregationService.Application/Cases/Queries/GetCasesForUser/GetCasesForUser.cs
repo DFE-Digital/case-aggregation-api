@@ -1,13 +1,8 @@
 ﻿using System.ComponentModel;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using MediatR;
-using Dfe.CaseAggregationService.Application.Services.Builders;
-using Dfe.CaseAggregationService.Domain.Entities.Academisation;
-using Dfe.CaseAggregationService.Domain.Entities.Complete;
-using Dfe.CaseAggregationService.Domain.Entities.Mfsp;
-using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Microsoft.Extensions.Logging;
-using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
+using Dfe.CaseAggregationService.Application.Services.SystemIntegration;
 
 namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
 {
@@ -39,17 +34,11 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         int RecordCount = 25) : IRequest<Result<GetCasesByUserResponseModel>>;
 
     public class GetCasesForUserQueryHandler(
-        IAcademisationRepository academisationRepository,
-        IGetCaseInfo<AcademisationSummary> academisationMap,
-        IRecastRepository recastRepository,
-        IGetCaseInfo<RecastSummary> recastMap,
-        IMfspRepository mfspRepository,
-        IGetCaseInfo<MfspSummary> mfspMap,
-        ICompleteRepository completeRepository,
-        IGetCaseInfo<CompleteSummary> completeMap,
+        IEnumerable<ISystemIntegration> integrations,
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
     {
+
         public async Task<Result<GetCasesByUserResponseModel>> Handle(GetCasesForUserQuery request,
             CancellationToken cancellationToken)
         {
@@ -58,46 +47,13 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             var userCaseInfo = new List<UserCaseInfo>();
 
             var listOfTasks = new List<Task<IEnumerable<UserCaseInfo>>>();
-
-            if (request.IncludePrepare)
-            {
-                var includeConversions = request.FilterProjectTypes?.Contains("Conversion") ?? false ;
-                var includeTransfers = request.FilterProjectTypes?.Contains("Transfer") ?? false; 
-                var includeFormAMat = request.FilterProjectTypes?.Contains("Form a MAT") ?? false;
-
-                var filtersSet = request.FilterProjectTypes is { Length: > 0 };
-
-                if (!filtersSet || includeConversions || includeTransfers || includeFormAMat)
-                {
-                    listOfTasks.Add(academisationRepository.GetAcademisationSummaries(request.UserEmail,
-                            includeConversions, includeTransfers, includeFormAMat, request.SearchTerm)
-                        .ContinueWith(ProcessAcademisation, cancellationToken));
-                }
-            }
-
-            if (request.IncludeConcerns)
-            {
-                listOfTasks.Add(recastRepository.GetRecastSummaries(request.UserEmail, request.FilterProjectTypes)
-                    .ContinueWith(ProcessRecast, cancellationToken));
-            }
-
-            if (request.IncludeManageFreeSchools)
-            {
-                listOfTasks.Add(mfspRepository.GetMfspSummaries(request.UserEmail, request.FilterProjectTypes)
-                    .ContinueWith(ProcessMfsp, cancellationToken));
-            }
-
-            if (request.IncludeComplete)
-            {
-                listOfTasks.Add(completeRepository.GetCompleteSummaryForUser(request.UserEmail, request.FilterProjectTypes, cancellationToken)
-                    .ContinueWith(ProcessComplete, cancellationToken));
-            }
-
+            
             try
             {
-                await Task.WhenAll(listOfTasks.ToArray());
+                listOfTasks.AddRange(integrations.Select(x => x.GetCasesForQuery(request, cancellationToken)));
+                await Task.WhenAll(listOfTasks);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.LogWarning("A call has failed when aggregating cases: {0}", e.Message);
             }
@@ -129,64 +85,5 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
                 userCaseInfo.Sort((x1, x2) => DateTime.Compare(x2.UpdatedDate, x1.UpdatedDate));
         }
 
-        private IEnumerable<UserCaseInfo> ProcessAcademisation(Task<IEnumerable<AcademisationSummary>> cases)
-        {
-            if (cases.IsFaulted)
-            {
-                if (cases.Exception is not null)
-                    logger.LogError(cases.Exception, cases.Exception.Message);
-
-                return [];
-            }
-           
-            var academisation = cases.Result.ToList();
-            return academisation.Select(academisationMap.GetCaseInfo);
-
-        }
-
-        private IEnumerable<UserCaseInfo> ProcessRecast(Task<IEnumerable<RecastSummary>> cases)
-        {
-            if (cases.IsFaulted)
-            {
-                if (cases.Exception is not null)
-                    logger.LogError(cases.Exception, cases.Exception.Message);
-
-                return [];
-            }
-
-            var recast = cases.Result.ToList();
-            return recast.Select(recastMap.GetCaseInfo);
-
-        }
-
-        private IEnumerable<UserCaseInfo> ProcessMfsp(Task<IEnumerable<MfspSummary>> cases)
-        {
-            if (cases.IsFaulted)
-            {
-                if (cases.Exception is not null)
-                    logger.LogError(cases.Exception, cases.Exception.Message);
-
-                return [];
-            }
-
-            var recast = cases.Result.ToList();
-            return recast.Select(mfspMap.GetCaseInfo);
-
-        }
-
-        private IEnumerable<UserCaseInfo> ProcessComplete(Task<IEnumerable<CompleteSummary>> cases)
-        {
-            if (cases.IsFaulted)
-            {
-                if (cases.Exception is not null)
-                    logger.LogError(cases.Exception, cases.Exception.Message);
-
-                return [];
-            }
-
-            var recast = cases.Result.ToList();
-            return recast.Select(completeMap.GetCaseInfo);
-
-        }
     }
 }

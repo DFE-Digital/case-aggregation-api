@@ -46,13 +46,13 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         private static IEnumerable<CaseInfoItem> GetCaseSummaries(AcademisationSummary summary)
         {
             if (summary.ConversionsSummary != null)
-                return GetConversionInfo(summary);
+                return GetConversionInfo(summary.ConversionsSummary);
 
             if (summary.FormAMatSummary != null)
-                return GetFormAMatInfo(summary);
+                return GetFormAMatInfo(summary.FormAMatSummary);
 
             if (summary.TransfersSummary != null)
-                return GetTransferInfo(summary);
+                return GetTransferInfo(summary.TransfersSummary);
 
             return [];
         }
@@ -147,38 +147,41 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
             return string.Empty;
         }
 
-        private static IEnumerable<CaseInfoItem> GetConversionInfo(AcademisationSummary summary)
+        private static IEnumerable<CaseInfoItem> GetConversionInfo(ConversionsSummary summary)
         {
-            yield return new CaseInfoItem("URN", summary.ConversionsSummary.Urn.ToString(), null);
-            if(summary.ConversionsSummary.ConversionTransferDate != null)
-                yield return new CaseInfoItem("Advisory board date", summary.ConversionsSummary.ConversionTransferDate.Value.ToString("dd/MM/yyyy"), null);
-            yield return new CaseInfoItem("Incoming trust", summary.ConversionsSummary.NameOfTrust!, null);
-            yield return new CaseInfoItem("Local authority", summary.ConversionsSummary.LocalAuthority!, null);
+            yield return new CaseInfoItem("URN", summary.Urn.ToString(), null);
+            if(summary.ConversionTransferDate != null)
+                yield return new CaseInfoItem("Advisory board date", summary.ConversionTransferDate.Value.ToString("dd/MM/yyyy"), null);
+            yield return new CaseInfoItem("Incoming trust", summary.NameOfTrust!, null);
+            yield return new CaseInfoItem("Local authority", summary.LocalAuthority!, null);
             yield return new CaseInfoItem("Route", ProcessConversionRoute(summary), null);
         }
 
-        private static IEnumerable<CaseInfoItem> GetTransferInfo(AcademisationSummary summary)
+        private static IEnumerable<CaseInfoItem> GetTransferInfo(TransfersSummary summary)
         {
-            yield return new CaseInfoItem("URN", summary.TransfersSummary.Urn.ToString(), null);
-            if(summary.TransfersSummary.TargetDateForTransfer != null)
-                yield return new CaseInfoItem("Proposed transfer date", summary.TransfersSummary.TargetDateForTransfer.Value.ToString("dd/MM/yyyy"), null);
+            yield return new CaseInfoItem("URN", summary.Urn.ToString(), null);
+            if(summary.TargetDateForTransfer != null)
+                yield return new CaseInfoItem("Proposed transfer date", summary.TargetDateForTransfer.Value.ToString("dd/MM/yyyy"), null);
             
-            yield return new CaseInfoItem("Incoming trust", summary.TransfersSummary.IncomingTrustName, null);
-            yield return new CaseInfoItem("Outgoing trust", summary.TransfersSummary.OutgoingTrustName!, null);
-            yield return new CaseInfoItem("Route", summary.TransfersSummary.TypeOfTransfer, null);
+            yield return new CaseInfoItem("Incoming trust", summary.IncomingTrustName, null);
+            yield return new CaseInfoItem("Outgoing trust", summary.OutgoingTrustName!, null);
+            yield return new CaseInfoItem("Route", summary.TypeOfTransfer, null);
         }
 
-        private static IEnumerable<CaseInfoItem> GetFormAMatInfo(AcademisationSummary summary)
+        private static IEnumerable<CaseInfoItem> GetFormAMatInfo(FormAMatSummary summary)
         {
-            yield return new CaseInfoItem("School names", summary.FormAMatSummary.SchoolNames.Aggregate((acc, next) => acc + ", " + next), null);
-            if (summary.FormAMatSummary.AdvisoryBoardDate != null)
-                yield return new CaseInfoItem("Advisory board date", summary.FormAMatSummary.AdvisoryBoardDate.Value.ToString("dd/MM/yyyy"), null);
-            yield return new CaseInfoItem("Local authority(s) involved", summary.FormAMatSummary.LocalAuthority.Aggregate((acc, next) => acc + ", " + next), null);
+            if (summary == null)
+                throw new ArgumentNullException();
+
+            yield return new CaseInfoItem("School names", summary.SchoolNames.Aggregate((acc, next) => acc + ", " + next), null);
+            if (summary.AdvisoryBoardDate != null)
+                yield return new CaseInfoItem("Advisory board date", summary.AdvisoryBoardDate.Value.ToString("dd/MM/yyyy"), null);
+            yield return new CaseInfoItem("Local authority(s) involved", summary.LocalAuthority.Aggregate((acc, next) => acc + ", " + next), null);
         }
 
-        private static string? ProcessConversionRoute(AcademisationSummary input)
+        private static string? ProcessConversionRoute(ConversionsSummary input)
         {
-            return input.ConversionsSummary?.AcademyTypeAndRoute switch
+            return input.AcademyTypeAndRoute switch
             {
                 "Converter" => "Voluntary conversion",
                 "Sponsored" => "Sponsored conversion",

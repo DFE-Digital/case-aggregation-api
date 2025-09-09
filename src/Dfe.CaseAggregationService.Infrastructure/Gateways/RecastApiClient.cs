@@ -1,6 +1,7 @@
 ﻿using Dfe.AcademiesApi.Client.Contracts;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
+using Dfe.CaseAggregationService.Infrastructure.Dto.Recast;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
@@ -22,7 +23,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
         public async Task<IEnumerable<RecastSummary>> GetRecastSummaries(string userEmail,
             string[]? requestFilterProjectTypes)
         {
-            var baseUrl = $"/v2/concerns-cases/summary/{userEmail}/active";
+            var baseUrl = $"v2/concerns-cases/summary/{userEmail}/active";
 
             var queryParams = new Dictionary<string, string?>
             {
@@ -40,32 +41,41 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var result = await Get<ApiResponseV2<ActiveCaseSummaryResponse>>(url, headers);
 
-            if (!result.Data.Any())
+            if (result.Data == null || !result.Data.Any())
                 return [];
 
-            var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn));
-
-            var output = result.Data.Select(x => new RecastSummary
+            try
             {
-                Id = x.CaseUrn,
-                CaseType = GetCaseType(x),
-                TrustName = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.Name ?? "",
-                Trn = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.ReferenceNumber ?? "",
-                DateCaseCreated = x.CreatedAt,
-                RiskToTrust = x.Rating.Name
-            });
+                var trusts = await _trustsClient.GetByUkprnsAllAsync(result.Data.Select(x => x.TrustUkPrn ?? ""));
 
-            if (requestFilterProjectTypes is { Length: > 0 })
+                var output = result.Data.Select(x => new RecastSummary
+                {
+                    Id = x.CaseUrn,
+                    CaseType = GetCaseType(x),
+                    TrustName = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.Name ?? "",
+                    Trn = trusts.FirstOrDefault(t => t.Ukprn == x.TrustUkPrn)?.ReferenceNumber ?? "",
+                    DateCaseCreated = x.CreatedAt,
+                    RiskToTrust = x.Rating.Name
+                });
+
+                if (requestFilterProjectTypes is { Length: > 0 })
+                {
+                    return output.Where(x => requestFilterProjectTypes.Contains(x.CaseType));
+                }
+
+                return output;
+            }
+            catch(Exception ex)
             {
-                return output.Where(x => requestFilterProjectTypes.Contains(x.CaseType));
+                Console.WriteLine(ex);
+                throw;
             }
 
-            return output;
         }
-        
+
         private string GetCaseType(ActiveCaseSummaryResponse summary)
         {
-            return summary.ActiveConcerns.FirstOrDefault()?.Name ?? "Monitoring";
+            return summary.ActiveConcerns?.FirstOrDefault()?.Name ?? "Monitoring";
         }
 
     }
