@@ -2,7 +2,6 @@
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 using Dfe.Complete.Client.Contracts;
 using Microsoft.Extensions.Logging;
-using System.Linq;
 
 namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 {
