@@ -5,9 +5,9 @@ namespace Dfe.CaseAggregationService.Application.Common.Extensions
 {
     public static class EnumExtensions
     {
-        public static string ToDescription<T>(this T source)
+        public static string ToDescription<T>(this T? source)
         {
-            if (Equals(source, default(T))) return string.Empty;
+            if (source == null) return string.Empty;
 
             var fi = source.GetType().GetField(source.ToString());
 
