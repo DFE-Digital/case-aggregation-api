@@ -73,21 +73,22 @@ namespace Dfe.CaseAggregationService.Infrastructure.Tests.Gateways
         }
 
 
-        private ListAllProjectsForUserQueryResultModel BuildFixture(ProjectType? projectType = ProjectType.Conversion, bool? isFormAMat = false)
+        private static ListAllProjectsForUserQueryResultModel BuildFixture(ProjectType? projectType = ProjectType.Conversion, bool? isFormAMat = false)
         {
-            var result = new ListAllProjectsForUserQueryResultModel();
-
-            result.ProjectId = new ProjectId();
-            result.ProjectType = projectType;
-            result.IsFormAMat = isFormAMat;
-            result.SchoolOrAcademyName = "";
-            result.Urn = new Urn();
-            result.CompletionDate = new DateTime();
-            result.IncomingTrustName = "";
-            result.OutgoingTrustName = "";
-            result.LocalAuthority = "";
-            result.CreatedDate = new DateTime();
-            result.UpdatedDate = new DateTime();
+            var result = new ListAllProjectsForUserQueryResultModel
+            {
+                ProjectId = new ProjectId(),
+                ProjectType = projectType,
+                IsFormAMat = isFormAMat,
+                SchoolOrAcademyName = "",
+                Urn = new Urn(),
+                CompletionDate = new DateTime(),
+                IncomingTrustName = "",
+                OutgoingTrustName = "",
+                LocalAuthority = "",
+                CreatedDate = new DateTime(),
+                UpdatedDate = new DateTime()
+            };
 
             return result;
         }
