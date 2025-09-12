@@ -2,10 +2,10 @@ namespace Dfe.CaseAggregationService.Api.Client.Settings
 {
     public class ApiClientSettings
     {
-        public string? BaseUrl { get; set; }
-        public string? ClientId { get; set; }
-        public string? ClientSecret { get; set; }
-        public string? Authority { get; set; }
-        public string? Scope { get; set; }
+        public string? BaseUrl { get; init; }
+        public string? ClientId { get; init; }
+        public string? ClientSecret { get; init; }
+        public string? Authority { get; init; }
+        public string? Scope { get; init; }
     }
 }

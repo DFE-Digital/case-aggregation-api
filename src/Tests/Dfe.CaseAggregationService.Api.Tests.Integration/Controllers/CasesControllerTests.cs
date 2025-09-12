@@ -28,10 +28,11 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
 
             const string? conversionsSummarySchoolName = "Academy School Name";
+            const string? transfersSummarySchoolName = "Transfer School Name";
             const string? mfspSummarySchoolName = "MfSP School Name";
             const string? trustName = "Test Trust Name";
 
-            SetupPrepare(factory, fixture, conversionsSummarySchoolName);
+            SetupPrepare(factory, fixture, conversionsSummarySchoolName, transfersSummarySchoolName);
             
             SetupMfsp(factory, fixture, mfspSummarySchoolName);
 
@@ -55,10 +56,11 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
 
             // Assert
             Assert.NotNull(result);
-            Assert.Equal(3, result.TotalRecordCount);
-            Assert.Equal(conversionsSummarySchoolName, result.CaseInfos.First().Title);
-            Assert.Equal(mfspSummarySchoolName, result.CaseInfos[1].Title);
-            Assert.Equal(trustName, result.CaseInfos[2].Title);
+            Assert.Equal(4, result.TotalRecordCount);
+            Assert.Equal(transfersSummarySchoolName, result.CaseInfos[0].Title);
+            Assert.Equal(conversionsSummarySchoolName, result.CaseInfos[1].Title);
+            Assert.Equal(mfspSummarySchoolName, result.CaseInfos[2].Title);
+            Assert.Equal(trustName, result.CaseInfos[3].Title);
         }
 
         [Theory]
@@ -99,7 +101,41 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
 
         }
 
-        
+        [Theory]
+        [CustomAutoData(typeof(CustomWebApplicationDbContextFactoryCustomization))]
+        public async Task GetCasesAsync_ShouldAcademisationCases_WhenCaseExists(
+            CustomWebApplicationDbContextFactory<Program> factory,
+            ICasesClient caseClient,
+            IFixture fixture)
+        {
+            factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
+
+            const string? conversionsSummarySchoolName = "Academy School Name";
+            const string? transfersSummarySchoolName = "Transfer School Name";
+
+            SetupPrepare(factory, fixture, conversionsSummarySchoolName, transfersSummarySchoolName);
+
+            // Act
+            var result = await caseClient.GetCasesByUserAsync("userName",
+                "userEmail",
+                false,
+                true,
+                false,
+                true,
+                true,
+                false,
+                ["Conversion"],
+                "",
+                null,
+                1,
+                25,
+                "1");
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(2, result.TotalRecordCount);
+            Assert.Equal(transfersSummarySchoolName, result.CaseInfos.First().Title);
+        }
 
         private static void SetupRecast(CustomWebApplicationDbContextFactory<Program> factory, IFixture fixture, params
             (string trustName, string caseType)[] recastCase)
@@ -194,22 +230,35 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
         }
 
         private static void SetupPrepare(CustomWebApplicationDbContextFactory<Program> factory, IFixture fixture,
-            string? conversionsSummarySchoolName)
+            string? conversionsSummarySchoolName,
+            string? transferSummarySchoolName)
         {
-            var academySummary = new AcademisationSummary()
+            var conversionAcademySummary = new AcademisationSummary()
             {
                 Id = 1,
                 CreatedOn = DateTime.UtcNow.AddMonths(3),
                 LastModifiedOn = DateTime.UtcNow.AddMonths(2),
-                ConversionsSummary = fixture.Create<ConversionsSummary>()
+                ConversionsSummary = fixture.Build<ConversionsSummary>()
+                    .With(x => x.SchoolName, conversionsSummarySchoolName)
+                    .With(x => x.ProjectStatus, "Deferred")
+                    .Create()
             };
 
-            academySummary.ConversionsSummary.SchoolName = conversionsSummarySchoolName;
-
-            academySummary.ConversionsSummary.ProjectStatus = "Deferred";
+            var transferAcademySummary = new AcademisationSummary()
+            {
+                Id = 1,
+                CreatedOn = DateTime.UtcNow.AddMonths(4),
+                LastModifiedOn = DateTime.UtcNow.AddMonths(3),
+                TransfersSummary = fixture.Build<TransfersSummary>()
+                    .With(x => x.Status, (string?)null)
+                    .With(x => x.IncomingTrustName, transferSummarySchoolName)
+                    .Create()
+            };
 
             Assert.NotNull(factory.WireMockServer);
-            factory.WireMockServer.AddGetWithJsonResponse($"/academisation/summary/projects", new[] { academySummary }, new List<KeyValuePair<string, string>> { new("email", "userEmail") });
+            factory.WireMockServer.AddGetWithJsonResponse($"/academisation/summary/projects", new[] { conversionAcademySummary, transferAcademySummary }, new List<KeyValuePair<string, string>> { new("email", "userEmail") });
+
+            factory.WireMockServer.AddGetWithJsonResponse($"/conversion-project/formamatproject/123", new[] { conversionAcademySummary, transferAcademySummary });
         }
     }
 }

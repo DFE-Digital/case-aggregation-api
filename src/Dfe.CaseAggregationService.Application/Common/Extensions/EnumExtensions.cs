@@ -5,7 +5,7 @@ namespace Dfe.CaseAggregationService.Application.Common.Extensions
 {
     public static class EnumExtensions
     {
-        public static string ToDescription<T>(this T source)
+        public static string ToDescription<T>(this T? source)
         {
             if (source == null) return string.Empty;
 
@@ -14,7 +14,7 @@ namespace Dfe.CaseAggregationService.Application.Common.Extensions
             var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(
                 typeof(DescriptionAttribute), false);
 
-            return attributes.Length > 0
+            return attributes != null && attributes.Length > 0
                 ? attributes[0].Description
                 : source.ToString();
         }
