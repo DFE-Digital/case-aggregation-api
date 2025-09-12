@@ -1,7 +1,7 @@
-﻿using Dfe.CaseAggregationService.Application.Common.Extensions;
-using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
+﻿using Dfe.CaseAggregationService.Application.Services.Builders.Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Domain.Entities.Complete;
+using GovUK.Dfe.CoreLibs.Utilities.Extensions;
 
 namespace Dfe.CaseAggregationService.Application.Services.Builders
 {
@@ -10,7 +10,6 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         private const string System = "Complete conversions, transfers and changes";
         public UserCaseInfo GetCaseInfo(CompleteSummary summary)
         {
-
             return new UserCaseInfo(GetTitle(summary),
                 getSystemLinks.GetCompleteTitleLink(summary.ProjectId.Value.ToString()),
                 System,
@@ -30,6 +29,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
                 return getGuidanceLinks.GenerateLinkItems("CompleteConversion");
             return [];
         }
+
         private IEnumerable<LinkItem> GenerateResourceLinkItems(CompleteSummary summary)
         {
 
