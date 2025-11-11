@@ -49,7 +49,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         {
             if (summary.CaseType is CompleteProjectType.Conversion or CompleteProjectType.FormAMatConversion)
             {
-                yield return new CaseInfoItem("Current confirmed conversion date",
+                yield return new CaseInfoItem("Current conversion date",
                     summary.ProposedTransferDate.HasValue
                         ? summary.ProposedTransferDate.Value.ToString("dd/MM/yyyy")
                         : "", null);
@@ -59,7 +59,7 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
 
             if (summary.CaseType is CompleteProjectType.Transfer or CompleteProjectType.FormAMatTransfer)
             {
-                yield return new CaseInfoItem("Current confirmed transfer date",
+                yield return new CaseInfoItem("Current transfer date",
                     summary.ProposedTransferDate.HasValue
                         ? summary.ProposedTransferDate.Value.ToString("dd/MM/yyyy")
                         : "", null);
