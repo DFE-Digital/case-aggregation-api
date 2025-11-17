@@ -35,7 +35,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 GetProjectType(x.ProjectType, x.IsFormAMat),
                 x.SchoolOrAcademyName ?? "",
                 x.Urn?.ToString() ?? "",
-                x.CompletionDate,
+                x.ConversionOrTransferDate,
                 x.IncomingTrustName ?? "",
                 x.OutgoingTrustName ?? "",
                 x.LocalAuthority ?? "",

@@ -48,7 +48,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             Assert.Empty(result.Resources);
             var info = result.Info.ToArray();
 
-            info[0].ShouldBe("Current confirmed transfer date", "08/09/2010");
+            info[0].ShouldBe("Current transfer date", "08/09/2010");
             info[1].ShouldBe("Incoming trust", "Incoming Trust name");
             info[2].ShouldBe("Outgoing trust", "Outgoing Trust name");
             info[3].ShouldBe("LA", "Local Authority");
@@ -95,7 +95,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services
             Assert.Empty(result.Resources);
             var info = result.Info.ToArray();
 
-            info[0].ShouldBe("Current confirmed conversion date", "08/09/2010");
+            info[0].ShouldBe("Current conversion date", "08/09/2010");
             info[1].ShouldBe("Name", "Incoming Trust name");
             info[2].ShouldBe("LA", "Local Authority");
         }
