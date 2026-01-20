@@ -1,4 +1,5 @@
-﻿using Dfe.AcademiesApi.Client.Contracts;
+﻿using System.Globalization;
+using Dfe.AcademiesApi.Client.Contracts;
 using Dfe.CaseAggregationService.Domain.Entities.SigChange;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 
@@ -47,7 +48,11 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
           if (string.IsNullOrEmpty(dateString))
             return DateTime.MinValue;
 
-          return DateTime.TryParse(dateString, out var date) ? date : DateTime.MinValue;
+          string format = "dd/MM/yyyy";
+          CultureInfo provider = CultureInfo.InvariantCulture;
+
+            return DateTime.TryParseExact(dateString, format, provider,
+              DateTimeStyles.None, out var date) ? date : DateTime.MinValue;
         }
 
   }
