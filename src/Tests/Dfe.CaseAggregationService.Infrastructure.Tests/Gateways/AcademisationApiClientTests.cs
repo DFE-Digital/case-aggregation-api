@@ -1,9 +1,6 @@
-﻿using Dfe.CaseAggregationService.Domain.Entities.Academisation;
-using Dfe.CaseAggregationService.Infrastructure.Gateways;
-using Dfe.Complete.Client.Contracts;
+﻿using Dfe.CaseAggregationService.Infrastructure.Gateways;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using System.Security.Policy;
 
 namespace Dfe.CaseAggregationService.Infrastructure.Tests.Gateways
 {
@@ -14,7 +11,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Tests.Gateways
         public AcademisationApiClientTests()
         {
             var httpClient = Substitute.For<IHttpClientFactory>();
-            var logger = Substitute.For<ILogger<ApiClient>>();
+            var logger = Substitute.For<ILogger<AcademisationApiClient>>();
 
             _repo = new AcademisationApiClient(httpClient, logger);
 
