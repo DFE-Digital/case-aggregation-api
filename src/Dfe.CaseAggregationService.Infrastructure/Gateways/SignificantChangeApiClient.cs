@@ -5,8 +5,11 @@ using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
 
 namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 {
-    public class SignificantChangeApiClient(ISignificantChangesV4Client significantChangesClient): ISigChangeRepository
+    public class SignificantChangeApiClient(ISignificantChangesV4Client significantChangesClient) : ISigChangeRepository
     {
+
+
+        const string format = "dd/MM/yyyy";
 
         public async Task<IEnumerable<SigChangeSummary>> GetSigChangeSummaries(string? userName, CancellationToken cancellationToken)
         {
@@ -37,7 +40,8 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
             if (string.IsNullOrEmpty(dateString))
                 return null;
 
-            if (DateTime.TryParse(dateString, out var date))
+            if (DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out var date))
                 return date;
 
             return null;
@@ -45,15 +49,13 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
         private DateTime ParseDate(string? dateString)
         {
-          if (string.IsNullOrEmpty(dateString))
-            return DateTime.MinValue;
+            if (string.IsNullOrEmpty(dateString))
+                return DateTime.MinValue;
 
-          string format = "dd/MM/yyyy";
-          CultureInfo provider = CultureInfo.InvariantCulture;
 
-            return DateTime.TryParseExact(dateString, format, provider,
-              DateTimeStyles.None, out var date) ? date : DateTime.MinValue;
+            return DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture,
+                 DateTimeStyles.None, out var date) ? date : DateTime.MinValue;
         }
 
-  }
+    }
 }
