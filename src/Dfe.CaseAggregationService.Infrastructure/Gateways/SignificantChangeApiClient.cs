@@ -7,8 +7,6 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 {
     public class SignificantChangeApiClient(ISignificantChangesV4Client significantChangesClient) : ISigChangeRepository
     {
-
-
         const string format = "dd/MM/yyyy";
 
         public async Task<IEnumerable<SigChangeSummary>> GetSigChangeSummaries(string? userName, CancellationToken cancellationToken)
