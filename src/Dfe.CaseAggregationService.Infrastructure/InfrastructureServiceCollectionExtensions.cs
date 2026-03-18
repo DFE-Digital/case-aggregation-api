@@ -20,8 +20,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IRecastRepository, RecastApiClient>();
             services.AddScoped<IMfspRepository, MfspApiClient>();
             services.AddScoped<ICompleteRepository, CompleteApiClient>();
+            services.AddScoped<ISigChangeRepository, SignificantChangeApiClient>();
 
             services.AddAcademiesApiClient<ITrustsV4Client, TrustsV4Client>(config);
+            services.AddAcademiesApiClient<ISignificantChangesV4Client, SignificantChangesV4Client>(config);
 
             services.AddCompleteApiClient<IProjectsClient, ProjectsClient>(config);
             //Cache service

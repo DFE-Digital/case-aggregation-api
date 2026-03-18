@@ -10,6 +10,7 @@ using Dfe.CaseAggregationService.Domain.Entities.Complete;
 using Dfe.CaseAggregationService.Domain.Entities.Mfsp;
 using Dfe.CaseAggregationService.Domain.Entities.Recast;
 using Dfe.CaseAggregationService.Application.Services.SystemIntegration;
+using Dfe.CaseAggregationService.Domain.Entities.SigChange;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -38,10 +39,12 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<IGetCaseInfo<RecastSummary>, GetCaseInfoFromRecastSummary>();
             services.AddScoped<IGetCaseInfo<MfspSummary>, GetCaseInfoFromMfspSummary>();
             services.AddScoped<IGetCaseInfo<CompleteSummary>, GetCaseInfoFromCompleteSummary>();
+            services.AddScoped<IGetCaseInfo<SigChangeSummary>, GetCaseInfoFromSigChangeSummary>();
             services.AddScoped<ISystemIntegration, AcademisationIntegration>();
             services.AddScoped<ISystemIntegration, MfspIntegration>();
             services.AddScoped<ISystemIntegration, CompleteIntegration>();
             services.AddScoped<ISystemIntegration, RecastIntegration>();
+            services.AddScoped<ISystemIntegration, SigChangeIntegration>();
 
             services.AddScoped<IGetGuidanceLinks, GetGuidanceLinks>();
             services.AddScoped<IGetResourcesLinks, GetResourcesLinks>();

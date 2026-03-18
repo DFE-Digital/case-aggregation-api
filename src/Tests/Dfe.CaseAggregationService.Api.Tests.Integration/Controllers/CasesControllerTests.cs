@@ -137,6 +137,41 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             Assert.Equal(transfersSummarySchoolName, result.CaseInfos.First().Title);
         }
 
+        [Theory]
+        [CustomAutoData(typeof(CustomWebApplicationDbContextFactoryCustomization))]
+        public async Task GetCasesAsync_ShouldSigChangeCases_WhenCaseExists(
+            CustomWebApplicationDbContextFactory<Program> factory,
+            ICasesClient caseClient,
+            IFixture fixture)
+        {
+            factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
+            
+            const string? academyName = "Academy School Name";
+            
+            SetupSigChange(factory, fixture, "userName", academyName);
+            
+            // Act
+            var result = await caseClient.GetCasesByUserAsync("userName",
+                "userEmail",
+                true,
+                false,
+                false,
+                false,
+                false,
+                false,
+                [],
+                "",
+                null,
+                1,
+                25,
+                "1");
+            
+            //// Assert
+            Assert.NotNull(result);
+            Assert.Equal(1, result.TotalRecordCount);
+            Assert.Equal(academyName, result.CaseInfos.First().Title);
+        }
+
         private static void SetupRecast(CustomWebApplicationDbContextFactory<Program> factory, IFixture fixture, params
             (string trustName, string caseType)[] recastCase)
         {
@@ -259,6 +294,31 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             factory.WireMockServer.AddGetWithJsonResponse($"/academisation/summary/projects", new[] { conversionAcademySummary, transferAcademySummary }, new List<KeyValuePair<string, string>> { new("email", "userEmail") });
 
             factory.WireMockServer.AddGetWithJsonResponse($"/conversion-project/formamatproject/123", new[] { conversionAcademySummary, transferAcademySummary });
+        }
+
+        private static void SetupSigChange(CustomWebApplicationDbContextFactory<Program> factory, IFixture fixture,
+            string deliveryOfficer,
+            string academyName)
+        {
+            var sigChangeSummary = new PagedDataResponseOfSignificantChangeDto
+                {Data = [new (){
+                    SigChangeId = 12345,
+                    AcademyName = academyName,
+                    TypeOfSigChangeMapped = "changeType",
+                    TrustName = "trust",
+                    Urn = 123456,
+                    LocalAuthority = "LA1",
+                    Region = "Region1",
+                    DecisionDate = "18/03/2025",
+                    ChangeCreationDate = "02/01/2025",
+                    ChangeEditDate = "06/04/2025"
+                    }]
+            };
+
+            Assert.NotNull(factory.WireMockServer);
+            factory.WireMockServer.AddGetWithJsonResponse($"/academies/v4/significantchanges", sigChangeSummary, new List<KeyValuePair<string, string>> { new("deliveryOfficer", deliveryOfficer) });
+
+      
         }
     }
 }
