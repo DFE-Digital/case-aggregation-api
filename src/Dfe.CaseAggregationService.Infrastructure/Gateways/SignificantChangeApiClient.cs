@@ -51,8 +51,9 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
                 return DateTime.MinValue;
 
 
-            return DateTime.TryParseExact(dateString, format, CultureInfo.InvariantCulture,
-                 DateTimeStyles.None, out var date) ? date : DateTime.MinValue;
+            return DateTime.TryParseExact(dateString, "yyyy-MM-dd'T'HH:mm:ssK",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.RoundtripKind, out var date) ? date : DateTime.MinValue;
         }
 
     }

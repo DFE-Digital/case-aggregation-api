@@ -298,6 +298,42 @@ namespace Dfe.CaseAggregationService.Application.Tests.QueryHandlers.GetCasesFor
             return integration;
         }
 
+        [Fact]
+        public async Task Handle_GetCaseForUser_ReturnsEmptyIfProjectTypeIsSet()
+        {
+            // Arrange
+            var fixture = new Fixture();
+            var userName = fixture.Create<string>();
+            var userEmail = fixture.Create<string>();
+            var query = new GetCasesForUserQuery(userName,
+                userEmail,
+                false,
+                true,
+                false,
+                false,
+                false,
+                false,
+                ["project type"
+                ],
+                null,
+                SortCriteria.CreatedDateDescending);
+
+
+            var logger = Substitute.For<ILogger<GetCasesForUserQueryHandler>>();
+
+            var handler = new GetCasesForUserQueryHandler([FixtureIntegration(userEmail)], logger);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
+            Assert.NotNull(result);
+
+            var getCasesByUserResponseModel = result.Value!;
+            Assert.Equal(0, getCasesByUserResponseModel.TotalRecordCount);
+            Assert.Equal(0, getCasesByUserResponseModel.CaseInfos.Count);
+        }
+
         private UserCaseInfo FixtureUserCaseInfo(int day)
         {
             return _fixture.Build<UserCaseInfo>()
