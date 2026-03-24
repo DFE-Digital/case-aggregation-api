@@ -31,8 +31,8 @@ namespace Dfe.CaseAggregationService.Infrastructure.Tests.Gateways
                         LocalAuthority = "LA 1",
                         Region = "Region 1",
                         DecisionDate = "10/02/2026",
-                        ChangeCreationDate = "10/02/2026",
-                        ChangeEditDate = "10/02/2026"
+                        ChangeCreationDate = "2026-02-10T00:00:00Z",
+                        ChangeEditDate = "2026-02-10T00:00:00Z"
                     },
 
                     new()
@@ -45,8 +45,8 @@ namespace Dfe.CaseAggregationService.Infrastructure.Tests.Gateways
                         LocalAuthority = "LA 2",
                         Region = "Region 2",
                         DecisionDate = "10/02/2026",
-                        ChangeCreationDate = "10/02/2026",
-                        ChangeEditDate = "10/02/2026"
+                        ChangeCreationDate = "2026-02-10T00:00:00Z",
+                        ChangeEditDate = "2026-02-10T00:00:00Z"
                     }
                 ]
             };
