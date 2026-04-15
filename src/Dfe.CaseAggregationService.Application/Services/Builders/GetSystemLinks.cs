@@ -15,6 +15,8 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         string GetCompleteTitleLink(params object[] formatKeys);
 
         string GetPrepareFormAMatTitleLink(params object[] formatKeys);
+
+        string GetSigChangeTitleLink(params object[] formatKeys);
     }
 
     public class GetSystemLinks(IConfiguration configuration): IGetSystemLinks
@@ -23,7 +25,6 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
         {
             return BuildLink("PrepareConversionLink", formatKeys);
         }
-
         public string GetPrepareTransferTitleLink(params object[] formatKeys)
         {
             return BuildLink("PrepareTransferLink", formatKeys);
@@ -49,7 +50,12 @@ namespace Dfe.CaseAggregationService.Application.Services.Builders
             return BuildLink("CompleteLink", formatKeys);
         }
 
-        private string BuildLink(string linkKey, object[] formatKeys)
+        public string GetSigChangeTitleLink(params object[] formatKeys)
+        {
+          return BuildLink("SignificantChangeLink", formatKeys);
+        }
+
+    private string BuildLink(string linkKey, object[] formatKeys)
         {
             var linkBase = configuration.GetSection($"SystemLinks:{linkKey}").Get<string>();
             if (string.IsNullOrEmpty(linkBase))

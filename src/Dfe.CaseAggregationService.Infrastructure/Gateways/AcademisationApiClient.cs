@@ -9,7 +9,7 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
     {
         public AcademisationApiClient(
             IHttpClientFactory clientFactory, 
-            ILogger<ApiClient> logger,
+            ILogger<AcademisationApiClient> logger,
             string httpClientName = "AcademisationApiClient") : base(clientFactory, logger, httpClientName)
         {
             
