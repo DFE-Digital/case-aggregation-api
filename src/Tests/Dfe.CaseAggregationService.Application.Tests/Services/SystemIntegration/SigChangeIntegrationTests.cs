@@ -69,7 +69,7 @@ namespace Dfe.CaseAggregationService.Application.Tests.Services.SystemIntegratio
             IGetCaseInfo<SigChangeSummary> mapper = Substitute.For<IGetCaseInfo<SigChangeSummary>>();
             ILogger<SigChangeIntegration> logger = Substitute.For<ILogger<SigChangeIntegration>>();
 
-            repo.GetSigChangeSummaries(Arg.Any<string>(), Arg.Any<CancellationToken>()).Returns([_fixture.Create<SigChangeSummary>()
+            repo.GetSigChangeSummaries(Arg.Any<string>(), Arg.Any<int>(), Arg.Any<CancellationToken>()).Returns([_fixture.Create<SigChangeSummary>()
             ]);
             mapper.GetCaseInfo(Arg.Any<SigChangeSummary>()).Returns(_fixture.Create<UserCaseInfo>());
 
