@@ -22,7 +22,7 @@ namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
 
             if (query.IncludeSignificantChange)
             {
-                return repo.GetSigChangeSummaries(query.UserName, cancellationToken)
+                return repo.GetSigChangeSummaries(query.UserName, query.RecordCount, cancellationToken)
                     .ContinueWith(ProcessResult, cancellationToken);
             }
 

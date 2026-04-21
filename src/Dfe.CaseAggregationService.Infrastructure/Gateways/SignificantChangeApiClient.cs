@@ -9,10 +9,10 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
     {
         const string format = "dd/MM/yyyy";
 
-        public async Task<IEnumerable<SigChangeSummary>> GetSigChangeSummaries(string? userName, CancellationToken cancellationToken)
+        public async Task<IEnumerable<SigChangeSummary>> GetSigChangeSummaries(string? userName, int recordCount, CancellationToken cancellationToken)
         {
 
-            var response = await significantChangesClient.SearchSignificantChangesAsync(userName, null, null, null, null, cancellationToken);
+            var response = await significantChangesClient.SearchSignificantChangesAsync(userName, null, null, null, recordCount, cancellationToken);
 
             if (response.Data == null)
                 throw new Exception();
