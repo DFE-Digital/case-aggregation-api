@@ -21,6 +21,8 @@ locals {
   enable_cdn_frontdoor                            = var.enable_cdn_frontdoor
   enable_event_hub                                = var.enable_event_hub
   enable_logstash_consumer                        = var.enable_logstash_consumer
+  enable_keyvault_private_endpoint                = var.enable_keyvault_private_endpoint
+  keyvault_subnet_cidr                            = local.enable_keyvault_private_endpoint ? var.keyvault_subnet_cidr : ""
   eventhub_export_log_analytics_table_names       = var.eventhub_export_log_analytics_table_names
   enable_dns_zone                                 = var.enable_dns_zone
   dns_zone_domain_name                            = var.dns_zone_domain_name
