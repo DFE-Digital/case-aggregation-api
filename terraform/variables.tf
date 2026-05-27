@@ -397,3 +397,15 @@ variable "enable_monitoring_traces" {
   type        = bool
   default     = true
 }
+
+variable "keyvault_subnet_cidr" {
+  description = "Virtual network address space CIDR"
+  type        = string
+  default     = ""
+}
+
+variable "enable_keyvault_private_endpoint" {
+  description = "Set to true to create a private endpoint for key vault."
+  type        = bool
+  default     = false
+}
