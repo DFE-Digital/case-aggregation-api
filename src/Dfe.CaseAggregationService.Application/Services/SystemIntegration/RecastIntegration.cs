@@ -15,14 +15,15 @@ namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
     {
         public Task<IEnumerable<UserCaseInfo>> GetCasesForQuery(GetCasesForUserQuery query, CancellationToken cancellationToken)
         {
-
             if (query.IncludeConcerns)
             {
-                return repo.GetRecastSummaries(query.UserEmail, query.FilterProjectTypes)
-                    .ContinueWith(ProcessResult, cancellationToken);
+                return TrackAndProcess(
+                    "Recast",
+                    () => repo.GetRecastSummaries(query.UserEmail, query.FilterProjectTypes),
+                    cancellationToken);
             }
 
-            return Task.FromResult<IEnumerable<UserCaseInfo>>(new List<UserCaseInfo>());
+            return SkippedResult("Recast");
         }
     }
 }

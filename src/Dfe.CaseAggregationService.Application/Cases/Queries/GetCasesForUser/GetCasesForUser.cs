@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using Dfe.CaseAggregationService.Application.Common.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
@@ -38,6 +39,7 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
         ILogger<GetCasesForUserQueryHandler> logger)
         : IRequestHandler<GetCasesForUserQuery, Result<GetCasesByUserResponseModel>>
     {
+        private const string StageTimingsEventName = "CaseAggregation.GetCasesForUser.StageTimings";
 
         public async Task<Result<GetCasesByUserResponseModel>> Handle(GetCasesForUserQuery request,
             CancellationToken cancellationToken)
@@ -47,7 +49,8 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             var userCaseInfo = new List<UserCaseInfo>();
 
             var listOfTasks = new List<Task<IEnumerable<UserCaseInfo>>>();
-            
+
+            var integrationsStopwatch = Stopwatch.StartNew();
             try
             {
                 listOfTasks.AddRange(integrations.Select(x => x.GetCasesForQuery(request, cancellationToken)));
@@ -57,20 +60,56 @@ namespace Dfe.CaseAggregationService.Application.Cases.Queries.GetCasesForUser
             {
                 logger.LogWarning("A call has failed when aggregating cases: {0}", e.Message);
             }
+            integrationsStopwatch.Stop();
 
-            listOfTasks.ForEach(x => userCaseInfo.AddRange(x.Result));
+            foreach (var task in listOfTasks)
+            {
+                if (task.IsCompletedSuccessfully)
+                    userCaseInfo.AddRange(task.Result);
+            }
 
             var returnModel = new GetCasesByUserResponseModel
             {
                 TotalRecordCount = userCaseInfo.Count
             };
 
+            var sortAndPaginationStopwatch = Stopwatch.StartNew();
             SortOutput(request, userCaseInfo);
-
             returnModel.CaseInfos = userCaseInfo.Skip((request.Page - 1) * request.RecordCount).Take(request.RecordCount).ToList();
+            sortAndPaginationStopwatch.Stop();
+
+            EmitStageTimings(
+                integrationsStopwatch.Elapsed.TotalMilliseconds,
+                sortAndPaginationStopwatch.Elapsed.TotalMilliseconds,
+                returnModel.TotalRecordCount,
+                returnModel.CaseInfos.Count);
 
             return Result<GetCasesByUserResponseModel>.Success(returnModel);
+        }
 
+        private void EmitStageTimings(
+            double integrationsElapsedMs,
+            double sortAndPaginationMs,
+            int totalRecordCount,
+            int pageRecordCount)
+        {
+            using (logger.BeginScope(new Dictionary<string, object>
+            {
+                ["EventName"] = StageTimingsEventName,
+                ["IntegrationsElapsedMs"] = integrationsElapsedMs,
+                ["SortAndPaginationMs"] = sortAndPaginationMs,
+                ["TotalRecordCount"] = totalRecordCount,
+                ["PageRecordCount"] = pageRecordCount
+            }))
+            {
+                logger.LogInformation(
+                    "{EventName}: IntegrationsElapsedMs={IntegrationsElapsedMs}, SortAndPaginationMs={SortAndPaginationMs}, TotalRecordCount={TotalRecordCount}, PageRecordCount={PageRecordCount}",
+                    StageTimingsEventName,
+                    integrationsElapsedMs,
+                    sortAndPaginationMs,
+                    totalRecordCount,
+                    pageRecordCount);
+            }
         }
 
         private static void SortOutput(GetCasesForUserQuery request, List<UserCaseInfo> userCaseInfo)

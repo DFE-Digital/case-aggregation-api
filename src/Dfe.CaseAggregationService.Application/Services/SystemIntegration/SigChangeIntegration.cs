@@ -15,23 +15,20 @@ namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
     {
         public Task<IEnumerable<UserCaseInfo>> GetCasesForQuery(GetCasesForUserQuery query, CancellationToken cancellationToken)
         {
-            if(query.FilterProjectTypes != null && query.FilterProjectTypes.Length > 0)
+            if (query.FilterProjectTypes != null && query.FilterProjectTypes.Length > 0)
             {
-                return EmptyResult();
+                return SkippedResult("SigChange");
             }
 
             if (query.IncludeSignificantChange)
             {
-                return repo.GetSigChangeSummaries(query.UserName, query.RecordCount, cancellationToken)
-                    .ContinueWith(ProcessResult, cancellationToken);
+                return TrackAndProcess(
+                    "SigChange",
+                    () => repo.GetSigChangeSummaries(query.UserName, query.RecordCount, cancellationToken),
+                    cancellationToken);
             }
 
-            return EmptyResult();
-        }
-
-        private static Task<IEnumerable<UserCaseInfo>> EmptyResult()
-        {
-            return Task.FromResult<IEnumerable<UserCaseInfo>>(new List<UserCaseInfo>());
+            return SkippedResult("SigChange");
         }
     }
 }

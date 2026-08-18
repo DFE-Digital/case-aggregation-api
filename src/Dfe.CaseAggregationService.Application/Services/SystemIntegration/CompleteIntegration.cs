@@ -3,7 +3,6 @@ using Dfe.CaseAggregationService.Application.Common.Models;
 using Dfe.CaseAggregationService.Application.Services.Builders;
 using Dfe.CaseAggregationService.Domain.Entities.Complete;
 using Dfe.CaseAggregationService.Domain.Interfaces.Repositories;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
@@ -18,11 +17,13 @@ namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
         {
             if (query.IncludeComplete)
             {
-                return repo.GetCompleteSummaryForUser(query.UserEmail, query.FilterProjectTypes, cancellationToken)
-                                .ContinueWith(ProcessResult, cancellationToken);
+                return TrackAndProcess(
+                    "Complete",
+                    () => repo.GetCompleteSummaryForUser(query.UserEmail, query.FilterProjectTypes, cancellationToken),
+                    cancellationToken);
             }
 
-            return Task.FromResult<IEnumerable<UserCaseInfo>>(new List<UserCaseInfo>());
+            return SkippedResult("Complete");
         }
     }
 }

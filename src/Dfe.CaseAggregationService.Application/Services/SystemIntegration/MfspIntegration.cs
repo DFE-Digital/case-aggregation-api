@@ -17,11 +17,13 @@ namespace Dfe.CaseAggregationService.Application.Services.SystemIntegration
         {
             if (query.IncludeManageFreeSchools)
             {
-                return repo.GetMfspSummaries(query.UserEmail, query.FilterProjectTypes)
-                    .ContinueWith(ProcessResult, cancellationToken);
+                return TrackAndProcess(
+                    "Mfsp",
+                    () => repo.GetMfspSummaries(query.UserEmail, query.FilterProjectTypes),
+                    cancellationToken);
             }
 
-            return Task.FromResult<IEnumerable<UserCaseInfo>>(new List<UserCaseInfo>());
+            return SkippedResult("Mfsp");
         }
     }
 }
