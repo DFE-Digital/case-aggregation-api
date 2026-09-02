@@ -10,6 +10,8 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 {
     public class MfspApiClient : ApiClient, IMfspRepository
     {
+        private const int SourcePageSize = 100;
+
         public MfspApiClient(
             IHttpClientFactory clientFactory,
             ILogger<ApiClient> logger,
@@ -24,15 +26,23 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
 
             var queryParams = new Dictionary<string, string?>
             {
-                { "projectManagedByEmail", userEmail }
+                { "projectManagedByEmail", userEmail },
+                { "page", "1" },
+                { "count", SourcePageSize.ToString() }
             };
 
             var url = QueryHelpers.AddQueryString(baseUrl, queryParams);
 
             var result = await Get<ApiListWrapper<GetProjectSummaryResponse>>(url);
 
-            var output = result.Data.Where(x => x.ProjectId.Any() &&
-                                                            FilterProjectStatus(x, requestFilterProjectTypes))
+            if (result?.Data is not { Count: > 0 })
+            {
+                return [];
+            }
+
+            var output = result.Data
+                .Where(x => !string.IsNullOrEmpty(x.ProjectId) &&
+                            FilterProjectTypes(x, requestFilterProjectTypes))
                 .Select(x => new MfspSummary()
             {
                 ProjectId = x.ProjectId,
@@ -52,14 +62,14 @@ namespace Dfe.CaseAggregationService.Infrastructure.Gateways
             return output;
         }
 
-        private static bool FilterProjectStatus(GetProjectSummaryResponse response, string[]? filters)
+        private static bool FilterProjectTypes(GetProjectSummaryResponse response, string[]? filters)
         {
-            if (filters is not { Length: > 0})
+            if (filters is not { Length: > 0 })
             {
                 return true;
             }
 
-            return filters is { Length: > 0 } && filters.Contains(response.ProjectStatus);
+            return filters.Contains(response.ProjectType);
         }
 
     }
