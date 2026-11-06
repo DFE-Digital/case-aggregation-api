@@ -1,8 +1,6 @@
-using AutoMapper;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Running;
 using Dfe.CaseAggregationService.Application.Common.Behaviours;
-using Dfe.CaseAggregationService.Application.MappingProfiles;
 using Dfe.CaseAggregationService.Application.Schools.Queries.GetPrincipalBySchool;
 using Dfe.CaseAggregationService.Application.Schools.Queries.GetPrincipalsBySchools;
 using Dfe.CaseAggregationService.Domain.Entities.Schools;
@@ -42,7 +40,6 @@ namespace Dfe.CaseAggregationService.Benchmarks
         private GetPrincipalsBySchoolsQuery? _query;
         private ISchoolRepository? _realRepository;
         private ICacheService<IMemoryCacheType>? _cacheService;
-        private IMapper? _mapper;
 
         [GlobalSetup]
         public void Setup()
@@ -53,12 +50,6 @@ namespace Dfe.CaseAggregationService.Benchmarks
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .Build();
-
-            var config = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<SchoolProfile>();
-            });
-            _mapper = config.CreateMapper();
 
             var httpContextAccessor = new HttpContextAccessor
             {
@@ -83,7 +74,6 @@ namespace Dfe.CaseAggregationService.Benchmarks
 
             // Register necessary services
             services.AddSingleton(_cacheService);
-            services.AddSingleton(_mapper);
             services.AddSingleton<IHttpContextAccessor>(httpContextAccessor);
             services.AddSingleton(loggerFactory);
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
