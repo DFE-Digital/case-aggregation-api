@@ -103,6 +103,69 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
 
         [Theory]
         [CustomAutoData(typeof(CustomWebApplicationDbContextFactoryCustomization))]
+        public async Task GetCasesAsync_ShouldMfspCases_WhenFilteredByPresumption(
+            CustomWebApplicationDbContextFactory<Program> factory,
+            ICasesClient caseClient,
+            IFixture fixture)
+        {
+            factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
+
+            const string? mfspSummarySchoolName = "MfSP School Name";
+
+            SetupMfsp(factory, fixture, mfspSummarySchoolName);
+
+            var result = await caseClient.GetCasesByUserAsync("userName",
+                "userEmail",
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                ["Presumption"],
+                "",
+                null,
+                1,
+                25,
+                "1");
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.TotalRecordCount);
+            Assert.Equal(mfspSummarySchoolName, result.CaseInfos[0].Title);
+        }
+
+        [Theory]
+        [CustomAutoData(typeof(CustomWebApplicationDbContextFactoryCustomization))]
+        public async Task GetCasesAsync_ShouldExcludeMfspCases_WhenFilteredByCentralRoute(
+            CustomWebApplicationDbContextFactory<Program> factory,
+            ICasesClient caseClient,
+            IFixture fixture)
+        {
+            factory.TestClaims = [new Claim(ClaimTypes.Role, "API.Read")];
+
+            SetupMfsp(factory, fixture, "MfSP School Name");
+
+            var result = await caseClient.GetCasesByUserAsync("userName",
+                "userEmail",
+                false,
+                false,
+                false,
+                true,
+                false,
+                false,
+                ["Central Route"],
+                "",
+                null,
+                1,
+                25,
+                "1");
+
+            Assert.NotNull(result);
+            Assert.Equal(0, result.TotalRecordCount);
+        }
+
+        [Theory]
+        [CustomAutoData(typeof(CustomWebApplicationDbContextFactoryCustomization))]
         public async Task GetCasesAsync_ShouldAcademisationCases_WhenCaseExists(
             CustomWebApplicationDbContextFactory<Program> factory,
             ICasesClient caseClient,
@@ -251,6 +314,7 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             var mfspSummary = fixture.Create<GetProjectSummaryResponse>();
 
             mfspSummary.ProjectStatus = "Pre-opening";
+            mfspSummary.ProjectType = "Presumption";
             mfspSummary.UpdatedAt = DateTime.UtcNow.AddMonths(2);
             mfspSummary.ProjectTitle = mfspSummarySchoolName;
 
@@ -261,7 +325,12 @@ namespace Dfe.CaseAggregationService.Api.Tests.Integration.Controllers
             };
 
             Assert.NotNull(factory.WireMockServer);
-            factory.WireMockServer.AddGetWithJsonResponse($"/mfsp/api/v1/summary/project", mfspResponse, new List<KeyValuePair<string, string>> { new("projectManagedByEmail", "userEmail") });
+            factory.WireMockServer.AddGetWithJsonResponse($"/mfsp/api/v1/summary/project", mfspResponse, new List<KeyValuePair<string, string>>
+            {
+                new("projectManagedByEmail", "userEmail"),
+                new("page", "1"),
+                new("count", "100")
+            });
         }
 
         private static void SetupPrepare(CustomWebApplicationDbContextFactory<Program> factory, IFixture fixture,
